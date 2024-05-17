@@ -1,0 +1,90 @@
+package main.java.com.lnedimovic.table_editor.expression.token;
+
+/**
+ * <code>Token</code> is a building block of an expression.
+ * Array of such is passed into parser to be parsed, so an abstract syntax tree of a formula can be created.
+ * List of all possible tokens can be found in {@link TokenType}.
+ */
+public class Token {
+    /**
+     * String representation of token (the way it is found in the original formula).
+     */
+    private String    value;
+    /**
+     * Type of the token (e.g. numerical constant, function...).
+     */
+    private TokenType type;
+    /**
+     * Related information to the token. Used with functions and operations (by storing the respective function / operation), for easier access.
+     */
+    private Object    related = null;
+
+    /**
+     * Creates an instance of Token.
+     * @param value   Original String representation of token.
+     * @param related Related piece of information / functionality. Not always meaningfully useful / provided.
+     * @param type    The type of the token. See {@link TokenType} for more information.
+     */
+    public Token(String value, Object related, TokenType type) {
+        this.value = value;
+        this.related = related;
+        this.type = type;
+    }
+
+    /**
+     * @return String representation of respective token.
+     */
+    public String toString() {
+        if (related != null) {
+            return String.format("Token('%s', %s, %s)", value, related, type);
+        }
+        else {
+            return String.format("Token('%s', %s)", value, type);
+        }
+    }
+
+    /**
+     * @return Type of the token.
+     */
+    public TokenType getType() {
+        return type;
+    }
+
+    /**
+     * Sets the new type for the respective token.
+     * @param type New type for token.
+     */
+    public void setType(TokenType type) {
+        this.type = type;
+    }
+
+    /**
+     * @return Value of the token.
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * Sets the new token representation value.
+     * @param value New value for token.
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    /**
+     * @return Related information / functionality of the token.
+     */
+    public Object getRelated() {
+        return related;
+    }
+
+    /**
+     * Sets the new related information / functionality.
+     * @param related New related information / functionality of the token.
+     */
+    public void setRelated(Object related) {
+        this.related = related;
+    }
+}
