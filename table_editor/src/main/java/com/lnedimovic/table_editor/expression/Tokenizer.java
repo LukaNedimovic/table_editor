@@ -1,10 +1,10 @@
-package main.java.com.lnedimovic.table_editor.expression;
+package com.lnedimovic.table_editor.expression;
 
-import main.java.com.lnedimovic.table_editor.expression.operation.Operation;
-import main.java.com.lnedimovic.table_editor.expression.function.Function;
+import com.lnedimovic.table_editor.expression.operation.Operation;
+import com.lnedimovic.table_editor.expression.function.Function;
 
-import main.java.com.lnedimovic.table_editor.expression.token.Token;
-import main.java.com.lnedimovic.table_editor.expression.token.TokenType;
+import com.lnedimovic.table_editor.expression.token.Token;
+import com.lnedimovic.table_editor.expression.token.TokenType;
 
 import java.util.ArrayList;
 
@@ -107,7 +107,7 @@ public class Tokenizer {
 
                 // Case 2 - possible unary / binary operation
                 else {
-                    Token lastToken = tokens.getLast();
+                    Token lastToken = tokens.get(tokens.size() - 1); // tokens.size() > 0, otherwise would fall into previous condition
 
                     // Unary operation can come after a "(" (e.g. (-5 + ...)), a "," (e.g. pow(..., -5)), or another operation (e.g. --5)
                     if (lastToken.getValue().equals("(") || expression.charAt(pos - 1) == ',' || lastToken.getType() == TokenType.OPERATION) {

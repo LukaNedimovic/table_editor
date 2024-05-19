@@ -1,7 +1,7 @@
-package main.java.com.lnedimovic.table_editor.expression.ast.node.nodes;
+package com.lnedimovic.table_editor.expression.ast.node.nodes;
 
-import main.java.com.lnedimovic.table_editor.expression.ast.node.Node;
-import main.java.com.lnedimovic.table_editor.expression.operation.Operation;
+import com.lnedimovic.table_editor.expression.ast.node.Node;
+import com.lnedimovic.table_editor.expression.operation.Operation;
 
 /**
  * <code>BinaryOpNode</code> is a Node resembling a binary operation within an abstract syntax tree of the given expression.

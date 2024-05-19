@@ -1,4 +1,4 @@
-package main.java.com.lnedimovic.table_editor.expression.operation;
+package com.lnedimovic.table_editor.expression.operation;
 
 /**
  * Abstract class representing either a unary or binary operation.
@@ -45,7 +45,7 @@ public abstract class Operation {
      * @return String representation of <code>Operation</code>.
      */
     public String toString() {
-        return "Operation(id=%s, precedence=%d, unary=%b)".formatted(id, precedence, isUnary);
+        return String.format("Operation(id=%s, precedence=%d, unary=%b)", id, precedence, isUnary);
     }
 
     /**

@@ -1,6 +1,6 @@
-package main.java.com.lnedimovic.table_editor.expression.operation.operations.unary;
+package com.lnedimovic.table_editor.expression.operation.operations.unary;
 
-import main.java.com.lnedimovic.table_editor.expression.operation.Operation;
+import com.lnedimovic.table_editor.expression.operation.Operation;
 
 /**
  * <code>Negation</code> is an operation that performs standard mathematical negation to given data.

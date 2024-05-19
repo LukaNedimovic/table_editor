@@ -1,6 +1,6 @@
-package main.java.com.lnedimovic.table_editor.table.handlers;
+package com.lnedimovic.table_editor.table.handlers;
 
-import main.java.com.lnedimovic.table_editor.table.model.TableModel;
+import com.lnedimovic.table_editor.table.model.TableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;

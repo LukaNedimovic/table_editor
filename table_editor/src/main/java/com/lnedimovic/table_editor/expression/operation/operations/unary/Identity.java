@@ -1,6 +1,6 @@
-package main.java.com.lnedimovic.table_editor.expression.operation.operations.unary;
+package com.lnedimovic.table_editor.expression.operation.operations.unary;
 
-import main.java.com.lnedimovic.table_editor.expression.operation.Operation;
+import com.lnedimovic.table_editor.expression.operation.Operation;
 
 /**
  * <code>Identity</code> is an operation that performs no change to given data.

@@ -1,6 +1,6 @@
-package main.java.com.lnedimovic.table_editor.expression.function.functions;
+package com.lnedimovic.table_editor.expression.function.functions;
 
-import main.java.com.lnedimovic.table_editor.expression.function.Function;
+import com.lnedimovic.table_editor.expression.function.Function;
 
 import java.lang.reflect.Constructor;
 

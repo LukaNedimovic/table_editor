@@ -1,4 +1,4 @@
-package main.java.com.lnedimovic.table_editor.expression.ast.node;
+package com.lnedimovic.table_editor.expression.ast.node;
 
 /**
  * Abstract class representing a node inside abstract syntax tree.

@@ -1,6 +1,6 @@
-package main.java.com.lnedimovic.table_editor.table.handlers;
+package com.lnedimovic.table_editor.table.handlers;
 
-import main.java.com.lnedimovic.table_editor.table.StandardTable;
+import com.lnedimovic.table_editor.table.StandardTable;
 
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.table.JTableHeader;

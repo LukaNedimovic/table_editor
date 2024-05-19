@@ -1,18 +1,18 @@
-package main.java.com.lnedimovic.table_editor.expression;
+package com.lnedimovic.table_editor.expression;
 
 // Operation and Function
-import main.java.com.lnedimovic.table_editor.expression.operation.Operation;
-import main.java.com.lnedimovic.table_editor.expression.function.Function;
+import com.lnedimovic.table_editor.expression.operation.Operation;
+import com.lnedimovic.table_editor.expression.function.Function;
 
 // Tokenization
-import main.java.com.lnedimovic.table_editor.expression.token.Token;
-import main.java.com.lnedimovic.table_editor.expression.token.TokenType;
-import main.java.com.lnedimovic.table_editor.table.model.TableModel;
+import com.lnedimovic.table_editor.expression.token.Token;
+import com.lnedimovic.table_editor.expression.token.TokenType;
+import com.lnedimovic.table_editor.table.model.TableModel;
 
 // AST Building
-import main.java.com.lnedimovic.table_editor.expression.ast.ASTree;
-import main.java.com.lnedimovic.table_editor.expression.ast.node.*;
-import main.java.com.lnedimovic.table_editor.expression.ast.node.nodes.*;
+import com.lnedimovic.table_editor.expression.ast.ASTree;
+import com.lnedimovic.table_editor.expression.ast.node.*;
+import com.lnedimovic.table_editor.expression.ast.node.nodes.*;
 
 import java.util.*;
 
@@ -31,6 +31,7 @@ public class Parser {
     /**
      * Set of functions used by the instance of parser.
      * It is possible to create different versions of parsers with totally different function sets - it is totally customizable.
+     * Parser doesn't use this array. It has been added for future flexibility use.
      */
     private Function[]  functions  = new Function[]{};
 
@@ -144,7 +145,7 @@ public class Parser {
 
         // Parse the token according to the grammar
         switch (tokenType) {
-            case TokenType.PARENTHESIS:
+            case PARENTHESIS:
                 // Must be a "("
                 if (value.equals("(")) {
                     left = parse(0); // Parse what is inside. Parenthesis resets the precedence.
@@ -164,7 +165,7 @@ public class Parser {
 
                 break;
 
-            case TokenType.OPERATION:
+            case OPERATION:
                 // Must be a unary operation. Binary operations are parsed separately below.
 
                 if (((Operation) related).isUnary()) {
@@ -181,14 +182,14 @@ public class Parser {
 
                 break;
 
-            case TokenType.NUMERICAL_CONSTANT:
+            case NUMERICAL_CONSTANT:
                 // Create a new node, keeping the numerical constant value
                 left = new ConstantNode(value);
                 tokensIdx++;
 
                 break;
 
-            case TokenType.FUNCTION:
+            case FUNCTION:
                 // Get the function inside the token and the arity of it.
                 Function function = (Function) (token.getRelated());
                 int arity = function.getArity();
@@ -251,7 +252,7 @@ public class Parser {
 
                 break;
 
-            case TokenType.REFERENCE:
+            case REFERENCE:
                 // Cell reference is handled by simply passing the value of range
                 left = new ReferenceNode((String) value);
                 tokensIdx++;

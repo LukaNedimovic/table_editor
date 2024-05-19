@@ -1,4 +1,4 @@
-package main.java.com.lnedimovic.table_editor.table;
+package com.lnedimovic.table_editor.table;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -29,8 +29,8 @@ public class CellRenderer extends DefaultTableCellRenderer {
         Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
         // Set background gradient for the headers
-        if (component instanceof JComponent jComponent && (column == 0 || row == -1)) {
-            jComponent.setBorder(BorderFactory.createCompoundBorder(
+        if (component instanceof JComponent && (column == 0 || row == -1)) {
+            ((JComponent) component).setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createMatteBorder(0, 0, 1, 1, new Color(185, 185, 185)),
                     BorderFactory.createMatteBorder(1, 1, 2, 2, new Color(185, 185, 185))
             ));

@@ -1,6 +1,6 @@
-package main.java.com.lnedimovic.table_editor.expression.operation.operations.binary;
+package com.lnedimovic.table_editor.expression.operation.operations.binary;
 
-import main.java.com.lnedimovic.table_editor.expression.operation.Operation;
+import com.lnedimovic.table_editor.expression.operation.Operation;
 
 /**
  * <code>Addition</code> is an operation that performs standard mathematical addition to given data.

@@ -1,25 +1,25 @@
-package main.java.com.lnedimovic.table_editor;
+package com.lnedimovic.table_editor;
 
 // Utilities
 import java.util.ArrayList;
 import java.util.List;
 
 // Operations and Functions
-import main.java.com.lnedimovic.table_editor.expression.operation.Operation;
-import main.java.com.lnedimovic.table_editor.expression.operation.operations.unary.*;
-import main.java.com.lnedimovic.table_editor.expression.operation.operations.binary.*;
+import com.lnedimovic.table_editor.expression.operation.Operation;
+import com.lnedimovic.table_editor.expression.operation.operations.unary.*;
+import com.lnedimovic.table_editor.expression.operation.operations.binary.*;
 
-import main.java.com.lnedimovic.table_editor.expression.function.Function;
-import main.java.com.lnedimovic.table_editor.expression.function.functions.*;
+import com.lnedimovic.table_editor.expression.function.Function;
+import com.lnedimovic.table_editor.expression.function.functions.*;
 
 // Parser and Tokenizer
-import main.java.com.lnedimovic.table_editor.expression.Parser;
-import main.java.com.lnedimovic.table_editor.expression.Tokenizer;
+import com.lnedimovic.table_editor.expression.Parser;
+import com.lnedimovic.table_editor.expression.Tokenizer;
 
 // Table
 import javax.swing.*;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import main.java.com.lnedimovic.table_editor.table.view.TableView;
+import com.lnedimovic.table_editor.table.view.TableView;
 
 /**
  * Main class. Class that contains entry point of the project.
@@ -58,10 +58,10 @@ public class Main {
             int cnt = 1;
             for (int row = 1; row <= ROW_COUNT; row++) {
                 data.add(new ArrayList<>());
-                data.getLast().add(row); // The first element in the row is its index
+                data.get(row - 1).add(row); // The first element in the row is its index
 
                 for (int col = 1; col <= 26; col++) {
-                    data.getLast().add(String.valueOf((double) cnt++)); // For each, set a new exemplary value
+                    data.get(row - 1).add(String.valueOf((double) cnt++)); // For each, set a new exemplary value
                 }
             }
 

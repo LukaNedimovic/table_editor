@@ -1,4 +1,4 @@
-package main.java.com.lnedimovic.table_editor.expression.token;
+package com.lnedimovic.table_editor.expression.token;
 
 public enum TokenType {
     /**

@@ -1,12 +1,12 @@
-package main.java.com.lnedimovic.table_editor.table.view;
+package com.lnedimovic.table_editor.table.view;
 
-import main.java.com.lnedimovic.table_editor.expression.Parser;
-import main.java.com.lnedimovic.table_editor.expression.Tokenizer;
+import com.lnedimovic.table_editor.expression.Parser;
+import com.lnedimovic.table_editor.expression.Tokenizer;
 
-import main.java.com.lnedimovic.table_editor.table.CellRenderer;
-import main.java.com.lnedimovic.table_editor.table.StandardTable;
-import main.java.com.lnedimovic.table_editor.table.handlers.*;
-import main.java.com.lnedimovic.table_editor.table.model.TableModel;
+import com.lnedimovic.table_editor.table.CellRenderer;
+import com.lnedimovic.table_editor.table.StandardTable;
+import com.lnedimovic.table_editor.table.handlers.*;
+import com.lnedimovic.table_editor.table.model.TableModel;
 
 import javax.swing.*;
 import javax.swing.table.JTableHeader;

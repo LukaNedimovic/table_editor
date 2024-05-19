@@ -1,8 +1,8 @@
-package main.java.com.lnedimovic.table_editor.expression.ast;
+package com.lnedimovic.table_editor.expression.ast;
 
-import main.java.com.lnedimovic.table_editor.expression.ast.node.Node;
-import main.java.com.lnedimovic.table_editor.expression.ast.node.nodes.ReferenceNode;
-import main.java.com.lnedimovic.table_editor.table.model.TableModel;
+import com.lnedimovic.table_editor.expression.ast.node.Node;
+import com.lnedimovic.table_editor.expression.ast.node.nodes.ReferenceNode;
+import com.lnedimovic.table_editor.table.model.TableModel;
 
 /**
  * <code>ASTree</code> is a class representing an abstract syntax tree, generated in expression parsing.

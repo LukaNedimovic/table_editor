@@ -1,9 +1,9 @@
-package main.java.com.lnedimovic.table_editor.table.model;
+package com.lnedimovic.table_editor.table.model;
 
-import main.java.com.lnedimovic.table_editor.expression.token.Token;
-import main.java.com.lnedimovic.table_editor.expression.Tokenizer;
-import main.java.com.lnedimovic.table_editor.expression.Parser;
-import main.java.com.lnedimovic.table_editor.expression.ast.ASTree;
+import com.lnedimovic.table_editor.expression.token.Token;
+import com.lnedimovic.table_editor.expression.Tokenizer;
+import com.lnedimovic.table_editor.expression.Parser;
+import com.lnedimovic.table_editor.expression.ast.ASTree;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;

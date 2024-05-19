@@ -1,4 +1,4 @@
-package main.java.com.lnedimovic.table_editor.expression.function;
+package com.lnedimovic.table_editor.expression.function;
 
 import java.util.Arrays;
 
@@ -94,7 +94,7 @@ public abstract class Function {
      * @return String representation of function
      */
     public String toString() {
-        return "Function(id=%s, returnType=%s)".formatted(id, returnType);
+        return String.format("Function(id=%s, returnType=%s)", id, returnType);
     }
 
     public boolean equals(Object obj) {

@@ -1,6 +1,6 @@
-package main.java.com.lnedimovic.table_editor.expression.operation.operations.binary;
+package com.lnedimovic.table_editor.expression.operation.operations.binary;
 
-import main.java.com.lnedimovic.table_editor.expression.operation.Operation;
+import com.lnedimovic.table_editor.expression.operation.Operation;
 /**
  * <code>Multiplication</code> is an operation that performs standard mathematical multiplication to given data.
  * Standard math language uses "*" (asterisk) to annotate it, i.e. 5 * 3 ( = 15).

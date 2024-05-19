@@ -1,7 +1,7 @@
-package main.java.com.lnedimovic.table_editor.expression.ast.node.nodes;
+package com.lnedimovic.table_editor.expression.ast.node.nodes;
 
-import main.java.com.lnedimovic.table_editor.expression.ast.node.Node;
-import main.java.com.lnedimovic.table_editor.expression.function.Function;
+import com.lnedimovic.table_editor.expression.ast.node.Node;
+import com.lnedimovic.table_editor.expression.function.Function;
 
 /**
  * <code>FunctionNode</code> is a Node resembling a function of variable length of parameters.
