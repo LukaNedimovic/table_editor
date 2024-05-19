@@ -1,5 +1,8 @@
 package com.lnedimovic.table_editor.table.model;
 
+import com.lnedimovic.table_editor.dtype.DType;
+import com.lnedimovic.table_editor.dtype.DTypeFactory;
+import com.lnedimovic.table_editor.expression.operation.OperationSet;
 import com.lnedimovic.table_editor.expression.token.Token;
 import com.lnedimovic.table_editor.expression.Tokenizer;
 import com.lnedimovic.table_editor.expression.Parser;
@@ -16,7 +19,7 @@ public class TableModel extends AbstractTableModel {
     /**
      * Row data
      */
-    private List<List<Object>> data;
+    private List<List<DType<?>>> data;
     /**
      * Names of columns.
      */
@@ -31,6 +34,8 @@ public class TableModel extends AbstractTableModel {
      */
     private Parser    parser;
 
+    private OperationSet operations;
+
     /**
      * Creates an instance of new <code>TableModel</code>.
      *
@@ -39,11 +44,12 @@ public class TableModel extends AbstractTableModel {
      * @param tokenizer   Tokenizer used with the model
      * @param parser      Parser used with the model
      */
-    public TableModel(List<List<Object>> data, String[] columnNames, Tokenizer tokenizer, Parser parser) {
+    public TableModel(List<List<DType<?>>> data, String[] columnNames, Tokenizer tokenizer, Parser parser) {
         this.data        = data;
         this.columnNames = columnNames;
         this.tokenizer   = tokenizer;
         this.parser      = parser;
+        this.operations  = parser.getOperations();
     }
 
     /**
@@ -65,7 +71,7 @@ public class TableModel extends AbstractTableModel {
             expressionTree.fillReferences(expressionTree.getRoot(), this);
 
             // Evaluate and return the value
-            return String.valueOf(expressionTree.evaluate());
+            return String.valueOf(expressionTree.evaluate(operations));
         }
         else {
             return null;
@@ -86,7 +92,9 @@ public class TableModel extends AbstractTableModel {
     }
     @Override
     public void setValueAt(Object value, int rowIndex, int columnIndex) {
-        data.get(rowIndex).set(columnIndex, value);
+        DType<?> valueDTypeInstance = DTypeFactory.create((String) value);
+
+        data.get(rowIndex).set(columnIndex, valueDTypeInstance);
         fireTableCellUpdated(rowIndex, columnIndex);
     }
     @Override
@@ -108,6 +116,14 @@ public class TableModel extends AbstractTableModel {
     }
     public void setParser(Parser parser) {
         this.parser = parser;
+    }
+
+    public OperationSet getOperations() {
+        return operations;
+    }
+
+    public void setOperations(OperationSet operations) {
+        this.operations = operations;
     }
 }
 

@@ -1,6 +1,8 @@
 package com.lnedimovic.table_editor.expression.ast.node.nodes;
 
+import com.lnedimovic.table_editor.dtype.DType;
 import com.lnedimovic.table_editor.expression.ast.node.Node;
+import com.lnedimovic.table_editor.expression.operation.OperationSet;
 
 /**
  * <code>ConstantNode</code> is a Node resembling a constant, known value.
@@ -9,13 +11,13 @@ public class ConstantNode extends Node {
     /**
      * Value stored inside the node.
      */
-    private final Object value;
+    private final DType<?> value;
 
     /**
      * Crates an instance of <code>ConstantNode</code>, given value.
      * @param value Value within the node.
      */
-    public ConstantNode(Object value) {
+    public ConstantNode(DType<?> value) {
         super();
 
         this.value = value;
@@ -26,7 +28,7 @@ public class ConstantNode extends Node {
      * @throws Exception
      */
     @Override
-    public Object evaluate() throws Exception {
+    public DType<?> evaluate(OperationSet operations) throws Exception {
         return value;
     }
 

@@ -1,6 +1,8 @@
 package com.lnedimovic.table_editor.expression.ast.node.nodes;
 
+import com.lnedimovic.table_editor.dtype.DType;
 import com.lnedimovic.table_editor.expression.ast.node.Node;
+import com.lnedimovic.table_editor.expression.operation.OperationSet;
 
 /**
  * <code>ReferenceNode</code>  is a Node resembling a cell reference.
@@ -13,7 +15,7 @@ public class ReferenceNode extends Node {
     /**
      * Value to be stored.
      */
-    private Object value;
+    private DType<?> value;
 
     /**
      * Creates an instance of <code>ReferenceNode</code>, given the cell range reference.
@@ -30,7 +32,7 @@ public class ReferenceNode extends Node {
      * @throws Exception
      */
     @Override
-    public Object evaluate() throws Exception {
+    public DType<?> evaluate(OperationSet operations) throws Exception {
         return this.value;
     }
 
@@ -58,7 +60,7 @@ public class ReferenceNode extends Node {
     public Object getValue() {
         return value;
     }
-    public void setValue(Object value) {
+    public void setValue(DType<?> value) {
         this.value = value;
     }
 }

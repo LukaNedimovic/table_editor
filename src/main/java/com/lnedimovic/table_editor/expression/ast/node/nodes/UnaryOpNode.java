@@ -1,7 +1,10 @@
 package com.lnedimovic.table_editor.expression.ast.node.nodes;
 
+import com.lnedimovic.table_editor.dtype.DType;
+import com.lnedimovic.table_editor.dtype.DTypeDouble;
 import com.lnedimovic.table_editor.expression.ast.node.Node;
 import com.lnedimovic.table_editor.expression.operation.Operation;
+import com.lnedimovic.table_editor.expression.operation.OperationSet;
 
 /**
  * <code>UnaryOpNode</code> is a Node resembling a unary operation within an abstract syntax tree of the given expression.
@@ -33,10 +36,10 @@ public class UnaryOpNode extends Node {
      * @throws Exception
      */
     @Override
-    public Object evaluate() throws Exception {
-        Object childEvaluation = next.evaluate();
+    public DType<?> evaluate(OperationSet operations) throws Exception {
+        DType<?> childEvaluation = next.evaluate(operations);
 
-        return operation.evaluate(childEvaluation);
+        return operations.evaluateOperation(operation, childEvaluation, null);
     }
 
     /**

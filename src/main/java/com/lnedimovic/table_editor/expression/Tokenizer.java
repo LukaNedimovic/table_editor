@@ -1,8 +1,11 @@
 package com.lnedimovic.table_editor.expression;
 
+import com.lnedimovic.table_editor.dtype.DTypeFactory;
+import com.lnedimovic.table_editor.dtype.DTypeString;
 import com.lnedimovic.table_editor.expression.operation.Operation;
 import com.lnedimovic.table_editor.expression.function.Function;
 
+import com.lnedimovic.table_editor.expression.operation.OperationSet;
 import com.lnedimovic.table_editor.expression.token.Token;
 import com.lnedimovic.table_editor.expression.token.TokenType;
 
@@ -19,7 +22,7 @@ public class Tokenizer {
      * Set of operations used by the instance of tokenizer.
      * It is possible to create different versions of tokenizers with totally different operation sets - it is totally customizable.
      */
-    private Operation[] operations = new Operation[]{};
+    private OperationSet operations;
 
     /**
      * Set of functions used by the instance of tokenizer.
@@ -37,20 +40,20 @@ public class Tokenizer {
      * @param operations Set of operations to be used during parsing.
      * @param functions  Set of functions to be used during parsing.
      */
-    public Tokenizer(Operation[] operations, Function[] functions) {
+    public Tokenizer(OperationSet operations, Function[] functions) {
         this.operations = operations;
         this.functions = functions;
     }
-
+    /*
     /**
      * Creates an instance of <code>Tokenizer</code>, provided set of operations.
      * It is possible to create a tokenizer without functions.
      *
      * @param operations Set of operations to be used during tokenization.
-     */
-    public Tokenizer(Operation[] operations) {
+     *
+    public Tokenizer(OperationSet[] operations) {
         this.operations = operations;
-    }
+    }*/
 
     /**
      * Creates an instance of <code>Tokenizer</code>, provided set of functions.
@@ -91,14 +94,14 @@ public class Tokenizer {
             char curr = expression.charAt(pos); // Current character
 
             // If current token represents an operation
-            if (findOperation(Character.toString(curr)) != null) {
+            if (operations.find(Character.toString(curr)) != null) {
                 // Case 1 - a definitive unary operation. Operation is unary if there are no tokens preceding it.
                 if (tokens.isEmpty()) {
                     // Try finding a unary operation with given symbol
-                    Operation foundOperation = findOperation(Character.toString(curr), true);
+                    Operation foundOperation = operations.find(Character.toString(curr), true);
                     if (foundOperation != null) {
                         // Create now operation token and add it to the list of tokens
-                        tokens.add(new Token(Character.toString(curr), foundOperation, TokenType.OPERATION));
+                        tokens.add(new Token(new DTypeString(Character.toString(curr)), foundOperation, TokenType.OPERATION));
                     }
                     else {
                         throw new Exception("Impossible to parse (undefined unary operation).");
@@ -110,12 +113,12 @@ public class Tokenizer {
                     Token lastToken = tokens.get(tokens.size() - 1); // tokens.size() > 0, otherwise would fall into previous condition
 
                     // Unary operation can come after a "(" (e.g. (-5 + ...)), a "," (e.g. pow(..., -5)), or another operation (e.g. --5)
-                    if (lastToken.getValue().equals("(") || expression.charAt(pos - 1) == ',' || lastToken.getType() == TokenType.OPERATION) {
+                    if (lastToken.equals("(") || expression.charAt(pos - 1) == ',' || lastToken.getType() == TokenType.OPERATION) {
                         // Try finding a unary operation with given symbol
-                        Operation foundOperation = findOperation(Character.toString(curr), true);
+                        Operation foundOperation = operations.find(Character.toString(curr), true);
                         if (foundOperation != null) {
                             // Create a new operation token and add it to the list of tokens
-                            tokens.add(new Token(Character.toString(curr), foundOperation, TokenType.OPERATION));
+                            tokens.add(new Token(new DTypeString(Character.toString(curr)), foundOperation, TokenType.OPERATION));
                         }
                         else {
                             throw new Exception("Impossible to parse (undefined unary operation).");
@@ -125,10 +128,10 @@ public class Tokenizer {
                     // If not unary, binary operation is encountered
                     else  {
                         // Try finding a binary operation with given symbol
-                        Operation foundOperation = findOperation(Character.toString(curr), false);
+                        Operation foundOperation = operations.find(Character.toString(curr), false);
                         if (foundOperation != null) {
                             // Create a new operation token and add it to the list of tokens
-                            tokens.add(new Token(Character.toString(curr), foundOperation, TokenType.OPERATION));
+                            tokens.add(new Token(new DTypeString(Character.toString(curr)), foundOperation, TokenType.OPERATION));
                         }
                         else {
                             throw new Exception("Impossible to parse (undefined binary operation).");
@@ -178,7 +181,7 @@ public class Tokenizer {
                     String completeReference = leftCell + ":" + rightCell;
 
                     // Create a new cell reference token and add it to the list of tokens
-                    tokens.add(new Token(completeReference, "", TokenType.REFERENCE));
+                    tokens.add(new Token(new DTypeString(completeReference), "", TokenType.REFERENCE));
                 }
 
                 // Named functions are written in lowercase
@@ -190,7 +193,7 @@ public class Tokenizer {
                     // If a function is found ...
                     if (foundFunction != null) {
                         // Create a new function token and add it to the list of tokens
-                        tokens.add(new Token(functionName, foundFunction, TokenType.FUNCTION));
+                        tokens.add(new Token(new DTypeString(functionName), foundFunction, TokenType.FUNCTION));
                     }
                     else {
                         throw new Exception("Invalid function name.");
@@ -207,22 +210,22 @@ public class Tokenizer {
                 String numericalConstant = parseNumericalConstant(expression, digitBuffer);
 
                 // Create a new numerical constant token and add it to the list of tokens
-                tokens.add(new Token(numericalConstant, "", TokenType.NUMERICAL_CONSTANT));
+                tokens.add(new Token(DTypeFactory.create(numericalConstant) , null, TokenType.NUMERICAL_CONSTANT));
             }
 
             // Everything else is directly stored
             else if (curr == '(') {
-                tokens.add(new Token("(", "", TokenType.PARENTHESIS));
+                tokens.add(new Token(new DTypeString("("), "", TokenType.PARENTHESIS));
                 pos++;
             }
 
             else if (curr == ')') {
-                tokens.add(new Token(")", "", TokenType.PARENTHESIS));
+                tokens.add(new Token(new DTypeString(")"), "", TokenType.PARENTHESIS));
                 pos++;
             }
 
             else if (curr == ',') {
-                tokens.add(new Token(",", "", TokenType.COMMA));
+                tokens.add(new Token(new DTypeString(","), "", TokenType.COMMA));
                 pos++;
             }
 
@@ -308,7 +311,6 @@ public class Tokenizer {
         String integerPart = bufferToString(digitBuffer);
         digitBuffer.clear();
 
-        String decimalPart = "0";
         // In case there is a decimal point
         if (pos < expression.length() && expression.charAt(pos) == '.') {
             pos++; // Skip the ".", then collect all the digits
@@ -322,12 +324,16 @@ public class Tokenizer {
             }
 
             // Again, convert the buffer and clear it
-            decimalPart = bufferToString(digitBuffer);
+            String decimalPart = bufferToString(digitBuffer);
             digitBuffer.clear();
-        }
 
-        // Return complete representation of decimal number
-        return integerPart + "." + decimalPart;
+            // Return complete representation of decimal number
+            return integerPart + "." + decimalPart;
+        }
+        else {
+            // Return complete representation of integer number
+            return integerPart;
+        }
     }
 
     /**
@@ -409,35 +415,6 @@ public class Tokenizer {
         }
 
         return functionName;
-    }
-
-    /**
-     * @param token Token that is being checked for being an operation.
-     * @return      Operation instance in case operation is found; null, otherwise.
-     */
-    public Operation findOperation(String token) {
-        for (Operation operation : operations) {
-            if (operation.getId().equals(token)) {
-                return operation;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param token   Token that is being checked for being an operation.
-     * @param isUnary Whether the operation returned should be unary, or not.
-     * @return        Operation instance in case operation is found; null, otherwise.
-     */
-    public Operation findOperation(String token, boolean isUnary) {
-        for (Operation operation : operations) {
-            if (operation.getId().equals(token) && isUnary == operation.isUnary()) {
-                return operation;
-            }
-        }
-
-        return null;
     }
 
     /**

@@ -1,7 +1,10 @@
 package com.lnedimovic.table_editor.expression.ast.node.nodes;
 
+import com.lnedimovic.table_editor.dtype.DType;
+import com.lnedimovic.table_editor.dtype.DTypeDouble;
 import com.lnedimovic.table_editor.expression.ast.node.Node;
 import com.lnedimovic.table_editor.expression.operation.Operation;
+import com.lnedimovic.table_editor.expression.operation.OperationSet;
 
 /**
  * <code>BinaryOpNode</code> is a Node resembling a binary operation within an abstract syntax tree of the given expression.
@@ -39,11 +42,11 @@ public class BinaryOpNode extends Node {
      * @throws Exception
      */
     @Override
-    public Object evaluate() throws Exception {
-        Object evaluationLeft = left.evaluate();
-        Object evaluationRight = right.evaluate();
+    public DType<?> evaluate(OperationSet operations) throws Exception {
+        DType<?> evaluationLeft  = left.evaluate(operations);
+        DType<?> evaluationRight = right.evaluate(operations);
 
-        return operation.evaluate(evaluationLeft, evaluationRight);
+        return operations.evaluateOperation(operation, evaluationLeft, evaluationRight);
     }
 
     /**

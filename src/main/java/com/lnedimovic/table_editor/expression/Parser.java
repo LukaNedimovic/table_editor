@@ -1,10 +1,13 @@
 package com.lnedimovic.table_editor.expression;
 
 // Operation and Function
+import com.lnedimovic.table_editor.dtype.DTypeDouble;
+import com.lnedimovic.table_editor.dtype.DTypeString;
 import com.lnedimovic.table_editor.expression.operation.Operation;
 import com.lnedimovic.table_editor.expression.function.Function;
 
 // Tokenization
+import com.lnedimovic.table_editor.expression.operation.OperationSet;
 import com.lnedimovic.table_editor.expression.token.Token;
 import com.lnedimovic.table_editor.expression.token.TokenType;
 import com.lnedimovic.table_editor.table.model.TableModel;
@@ -26,7 +29,7 @@ public class Parser {
      * Set of operations used by the instance of parser.
      * It is possible to create different versions of parsers with totally different operation sets - it is totally customizable.
      */
-    private Operation[] operations = new Operation[]{};
+    private OperationSet operations;
 
     /**
      * Set of functions used by the instance of parser.
@@ -50,7 +53,7 @@ public class Parser {
      * @param operations Set of operations to be used during parsing.
      * @param functions  Set of functions to be used during parsing.
      * */
-    public Parser(Operation[] operations, Function[] functions) {
+    public Parser(OperationSet operations, Function[] functions) {
         this.operations = operations;
         this.functions = functions;
     }
@@ -61,7 +64,7 @@ public class Parser {
      *
      * @param operations Set of operations to be used during parsing.
      * */
-    public Parser(Operation[] operations) {
+    public Parser(OperationSet operations) {
         this.operations = operations;
     }
 
@@ -81,7 +84,7 @@ public class Parser {
      * @param functions  Set of functions used during parsing.
      * @param model      Table model, whose data is to be referenced.
      * */
-    public Parser(Operation[] operations, Function[] functions, TableModel model) {
+    public Parser(OperationSet operations, Function[] functions, TableModel model) {
         this.operations = operations;
         this.functions = functions;
     }
@@ -116,6 +119,7 @@ public class Parser {
         ASTree tree = new ASTree();
         tree.setRoot(parse(0));
 
+        System.out.println(tree);
         return tree;
     }
 
@@ -127,7 +131,7 @@ public class Parser {
      * @throws Exception  In case there is a parsing error (invalid formula).
      */
     public Node parse(int precedence) throws Exception {
-        tokensIdx++; // For the ease of use, `parse()` incerements to the next token by itself
+        tokensIdx++; // For the ease of use, `parse()` increments to the next token by itself
 
         // If the end is reached - return null
         if (tokensIdx == tokens.length) {
@@ -140,19 +144,20 @@ public class Parser {
         // Gather information about current token
         Token token         = tokens[tokensIdx];
         TokenType tokenType = token.getType();
-        Object value        = token.getValue();
         Object related      = token.getRelated();
 
         // Parse the token according to the grammar
         switch (tokenType) {
             case PARENTHESIS:
+                DTypeString value = (DTypeString) token.getValue().getValue();
+
                 // Must be a "("
-                if (value.equals("(")) {
+                if (token.equals("(")) {
                     left = parse(0); // Parse what is inside. Parenthesis resets the precedence.
 
                     // For every open parenthesis, there must come a closed one
                     token = tokens[tokensIdx];
-                    if (!token.getValue().equals(")")) {
+                    if (!token.getValue().getValue().equals(")")) {
                         throw new Exception("Invalid expression. Expected a ')'");
                     }
 
@@ -184,7 +189,7 @@ public class Parser {
 
             case NUMERICAL_CONSTANT:
                 // Create a new node, keeping the numerical constant value
-                left = new ConstantNode(value);
+                left = new ConstantNode(token.getValue());
                 tokensIdx++;
 
                 break;
@@ -198,8 +203,8 @@ public class Parser {
                 if (arity == 0) {
                     // Make sure that there are enough tokens so "(" and ")" can appear, then test for their existence
                     if (tokensIdx >= tokens.length - 1 ||
-                        !tokens[tokensIdx + 1].getValue().equals("(") ||
-                        !tokens[tokensIdx + 2].getValue().equals(")")) {
+                        !tokens[tokensIdx + 1].equals("(") ||
+                        !tokens[tokensIdx + 2].equals(")")) {
                         throw new Exception("Invalid function without parameters.");
                     }
 
@@ -215,8 +220,8 @@ public class Parser {
 
                 // Test for the existence of "(" for function parameters
                 token = tokens[++tokensIdx];
-                if (!token.getValue().equals("(")) {
-                    throw new Exception("Invalid expression. Expected a '('");
+                if (!token.equals("(")) {
+                    throw new Exception("Invalid expression. Expected a '(', found: " + token);
                 }
 
                 // `arity` number of parameters is expected, therefore the array of fixed size is created
@@ -224,12 +229,12 @@ public class Parser {
                 int parametersIdx = 0; // Index of the free location to store the argument
 
                 // Parse until ")" is encountered (end of function)
-                while (!tokens[tokensIdx].getValue().equals(")")) {
+                while (!tokens[tokensIdx].equals(")")) {
                     Node parameter = parse(0); // Parse the parameter
 
                     // Parameters must be separated by commas, or if there are no more, ")" is expected
                     if (tokens[tokensIdx].getType() != TokenType.COMMA &&
-                        !tokens[tokensIdx].getValue().equals(")")) {
+                        !tokens[tokensIdx].getValue().getValue().equals(")")) {
                         throw new Exception("Invalid expression. Expected comma.");
                     }
                     // Parameter overflow (index out of bounds)
@@ -254,7 +259,7 @@ public class Parser {
 
             case REFERENCE:
                 // Cell reference is handled by simply passing the value of range
-                left = new ReferenceNode((String) value);
+                left = new ReferenceNode(token.getValue().toString());
                 tokensIdx++;
 
                 break;
@@ -301,7 +306,7 @@ public class Parser {
     /**
      * @return Set of operations used in the parser.
      */
-    public Operation[] getOperations() {
+    public OperationSet getOperations() {
         return operations;
     }
 
@@ -309,7 +314,7 @@ public class Parser {
      * Sets the new set of operations inside the parser.
      * @param operations New set of operation to be used.
      */
-    public void setOperations(Operation[] operations) {
+    public void setOperations(OperationSet operations) {
         this.operations = operations;
     }
 

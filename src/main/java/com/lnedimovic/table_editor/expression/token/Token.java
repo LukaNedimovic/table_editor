@@ -1,5 +1,8 @@
 package com.lnedimovic.table_editor.expression.token;
 
+import com.lnedimovic.table_editor.dtype.DType;
+import com.lnedimovic.table_editor.dtype.DTypeString;
+
 /**
  * <code>Token</code> is a building block of an expression.
  * Array of such is passed into parser to be parsed, so an abstract syntax tree of a formula can be created.
@@ -9,7 +12,7 @@ public class Token {
     /**
      * String representation of token (the way it is found in the original formula).
      */
-    private String    value;
+    private DType<?> value;
     /**
      * Type of the token (e.g. numerical constant, function...).
      */
@@ -25,7 +28,7 @@ public class Token {
      * @param related Related piece of information / functionality. Not always meaningfully useful / provided.
      * @param type    The type of the token. See {@link TokenType} for more information.
      */
-    public Token(String value, Object related, TokenType type) {
+    public Token(DType<?> value, Object related, TokenType type) {
         this.value = value;
         this.related = related;
         this.type = type;
@@ -36,10 +39,10 @@ public class Token {
      */
     public String toString() {
         if (related != null) {
-            return String.format("Token('%s', %s, %s)", value, related, type);
+            return String.format("Token('%s' (%s), %s, %s)", value, value.getClass(), related, type);
         }
         else {
-            return String.format("Token('%s', %s)", value, type);
+            return String.format("Token('%s' (%s), %s)", value, value.getClass(), type);
         }
     }
 
@@ -61,7 +64,7 @@ public class Token {
     /**
      * @return Value of the token.
      */
-    public String getValue() {
+    public DType<?> getValue() {
         return value;
     }
 
@@ -69,7 +72,7 @@ public class Token {
      * Sets the new token representation value.
      * @param value New value for token.
      */
-    public void setValue(String value) {
+    public void setValue(DType<?> value) {
         this.value = value;
     }
 
@@ -86,5 +89,24 @@ public class Token {
      */
     public void setRelated(Object related) {
         this.related = related;
+    }
+
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof Token) {
+            return (this.value.equals(((Token) obj).value) && this.type.equals(((Token) obj).type) && this.related.equals(((Token) obj).related));
+        }
+        if (obj instanceof String) {
+            if (value instanceof DTypeString) {
+                return value.getValue().equals(obj.toString());
+            }
+            else {
+                return false;
+            }
+        }
+
+        return false;
     }
 }

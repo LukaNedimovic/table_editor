@@ -4,10 +4,16 @@ package com.lnedimovic.table_editor;
 import java.util.ArrayList;
 import java.util.List;
 
+// DTypes
+import com.lnedimovic.table_editor.dtype.DType;
+import com.lnedimovic.table_editor.dtype.DTypeDouble;
+import com.lnedimovic.table_editor.dtype.DTypeInteger;
+import com.lnedimovic.table_editor.dtype.DTypeString;
+
 // Operations and Functions
+import com.lnedimovic.table_editor.expression.ast.ASTree;
 import com.lnedimovic.table_editor.expression.operation.Operation;
-import com.lnedimovic.table_editor.expression.operation.operations.unary.*;
-import com.lnedimovic.table_editor.expression.operation.operations.binary.*;
+import com.lnedimovic.table_editor.expression.operation.OperationSet;
 
 import com.lnedimovic.table_editor.expression.function.Function;
 import com.lnedimovic.table_editor.expression.function.functions.*;
@@ -19,12 +25,12 @@ import com.lnedimovic.table_editor.expression.Tokenizer;
 // Table
 import javax.swing.*;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.lnedimovic.table_editor.expression.token.Token;
 import com.lnedimovic.table_editor.table.view.TableView;
 
 /**
  * Main class. Class that contains entry point of the project.
  */
-
 public class Main {
     /**
      * Main method - entry point of the program.
@@ -37,18 +43,24 @@ public class Main {
      */
     public static void main(String[] args) throws Exception {
         // Setup exemplary operations and functions
-        Operation[] operations = setupOperations();
-        Function[]  functions  = setupFunctions();
+        OperationSet operations = setupOperations();
+        Function[]  functions   = setupFunctions();
 
         // Create tokenizers and parsers for given set of operations
         Tokenizer tokenizer = new Tokenizer(operations, functions);
         Parser parser       = new Parser(operations, functions);
 
+        ArrayList<Token> tokens = tokenizer.tokenize("=max(min(2, 1), 5) + e()");
+
+        ASTree tree = parser.parseTokens(tokens);
+        DType<?> result = tree.evaluate(operations);
+        System.out.println("Eval: " + result);
+
         // Using modern custom UI
         FlatMacDarkLaf.setup();
 
         SwingUtilities.invokeLater(() -> {
-            List<List<Object>> data = new ArrayList<>();
+            List<List<DType<?>>> data = new ArrayList<>();
             // Exemplary values: 1 <= ROW_COUNT <= 99, 1 <= COL_COUNT <= 26
             final int ROW_COUNT = 10;
             final int COL_COUNT = 26;
@@ -58,10 +70,10 @@ public class Main {
             int cnt = 1;
             for (int row = 1; row <= ROW_COUNT; row++) {
                 data.add(new ArrayList<>());
-                data.get(row - 1).add(row); // The first element in the row is its index
+                data.get(row - 1).add(new DTypeInteger(row)); // The first element in the row is its index
 
                 for (int col = 1; col <= 26; col++) {
-                    data.get(row - 1).add(String.valueOf((double) cnt++)); // For each, set a new exemplary value
+                    data.get(row - 1).add(new DTypeInteger(cnt++)); // For each, set a new exemplary value
                 }
             }
 
@@ -96,25 +108,26 @@ public class Main {
      *
      * @return Array of operations created.
      */
-    public static Operation[] setupOperations() {
+    public static OperationSet setupOperations() {
         // Unary operations
-        Operation id   = new Identity("+", 300);
-        Operation neg  = new Negation("-", 300);
+        Operation id   = new Operation("+", 300, true);
+        Operation neg  = new Operation("-", 300, true);
 
         // Binary operations
-        Operation add  = new Addition("+", 100);
-        Operation sub  = new Subtraction("-", 100);
+        Operation add  = new Operation("+", 100, false);
+        Operation sub  = new Operation("-", 100, false);
 
-        Operation mul  = new Multiplication("*", 200);
-        Operation div  = new Division("/", 200);
+        Operation mul  = new Operation("*", 200, false);
+        Operation div  = new Operation("/", 200, false);
 
-        Operation exp  = new Exponentiation("^", 400);
+        Operation exp  = new Operation("^", 400, false);
 
         // Logical operations are also supported
-        Operation lt   = new LessThan("<", 50);
-        Operation gt   = new GreaterThan(">", 50);
+        Operation lt   = new Operation("<", 50, false);
+        Operation gt   = new Operation(">", 50, false);
 
-        return new Operation[]{id, neg, add, sub, mul, div, exp, lt, gt};
+        Operation[] operations = new Operation[]{id, neg, add, sub, mul, div, exp, lt, gt};
+        return new OperationSet(operations);
     }
 
     /**

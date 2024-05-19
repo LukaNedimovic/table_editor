@@ -1,5 +1,6 @@
 package com.lnedimovic.table_editor.table.view;
 
+import com.lnedimovic.table_editor.dtype.DType;
 import com.lnedimovic.table_editor.expression.Parser;
 import com.lnedimovic.table_editor.expression.Tokenizer;
 
@@ -46,7 +47,7 @@ public class TableView extends JFrame {
      * @param tokenizer   <code>Tokenizer</code> to be used within the table.
      * @param parser      <code>Parser</code> to be used within the table.
      */
-    public TableView(List<List<Object>> data, String[] columnNames, Tokenizer tokenizer, Parser parser) {
+    public TableView(List<List<DType<?>>> data, String[] columnNames, Tokenizer tokenizer, Parser parser) {
         // Table Setup
         model = new TableModel(data, columnNames, tokenizer, parser);
         table = new StandardTable(model);

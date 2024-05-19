@@ -1,5 +1,7 @@
 package com.lnedimovic.table_editor.expression.function.functions;
 
+import com.lnedimovic.table_editor.dtype.DType;
+import com.lnedimovic.table_editor.dtype.DTypeDouble;
 import com.lnedimovic.table_editor.expression.function.Function;
 
 import java.lang.reflect.Constructor;
@@ -14,7 +16,7 @@ public class Pow extends Function {
      * @throws Exception  In case of invalid number of parameters.
      */
     public Pow(String id) throws Exception {
-        super(id, Double.class, Double.class, Double.class);
+        super(id, DTypeDouble.class, DTypeDouble.class, DTypeDouble.class);
     }
 
     /**
@@ -24,32 +26,26 @@ public class Pow extends Function {
      * @throws Exception In case of invalid number of arguments or invalid values.
      */
     @Override
-    public Object evaluate(Object... args) throws Exception {
+    public DType<?> evaluate(DType<?>... args) throws Exception {
         if (args.length != 2) {
-            throw new Exception("Pow(double, double): Invalid number of arguments");
+            throw new Exception("Pow(DTypeDouble, DTypeDouble) -> DTypeDouble: Invalid number of arguments");
         }
 
-        Object base     = args[0];
-        Object exponent = args[1];
-        if (!validValue(base) || !validValue(exponent)) {
-            throw new Exception("Pow(double, double) -> double: Invalid values provided.");
-        }
-        if (base instanceof String) {
-            base = Double.parseDouble((String) base);
-        }
-        if (exponent instanceof String) {
-            exponent = Double.parseDouble((String) exponent);
-        }
+        convertToValidDTypes(args);
+
+        DTypeDouble base     = (DTypeDouble) args[0];
+        DTypeDouble exponent = (DTypeDouble) args[1];
 
         // Cast to doubles, so values become compatible with Math.pow(double, double)
-        Object result = Math.pow((Double) base, (Double) exponent);
+        DTypeDouble result = new DTypeDouble(Math.pow(base.getValue(), exponent.getValue()));
 
         Class<?> returnType = getReturnType();
-        Class<?> primitiveTypeForConstructor = getPrimitiveType(returnType);
-        Constructor<?> constructor = returnType.getConstructor(primitiveTypeForConstructor);
+        Constructor<?> constructor = returnType.getConstructor(DTypeDouble.class);
+
+        System.out.println(constructor);
 
         // Create an instance
-        return constructor.newInstance(result);
+        return (DType<?>) constructor.newInstance(result);
     }
 
     public boolean validValue(Object obj) {

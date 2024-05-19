@@ -1,7 +1,10 @@
 package com.lnedimovic.table_editor.expression.ast;
 
+import com.lnedimovic.table_editor.dtype.DType;
+import com.lnedimovic.table_editor.dtype.DTypeFactory;
 import com.lnedimovic.table_editor.expression.ast.node.Node;
 import com.lnedimovic.table_editor.expression.ast.node.nodes.ReferenceNode;
+import com.lnedimovic.table_editor.expression.operation.OperationSet;
 import com.lnedimovic.table_editor.table.model.TableModel;
 
 /**
@@ -31,14 +34,14 @@ public class ASTree {
     /**
      * Evaluates the complete tree, using post-order traversal.
      * @return           Evaluation result.
-     * @throws Exception If root is unasigned.
+     * @throws Exception If root is unassigned.
      */
-    public Object evaluate() throws Exception {
+    public DType<?> evaluate(OperationSet operations) throws Exception {
         if (root == null) {
             throw new Exception("Root is not assigned.");
         }
 
-        return this.root.evaluate();
+        return this.root.evaluate(operations);
     }
 
     /**
@@ -51,7 +54,7 @@ public class ASTree {
         if (node instanceof ReferenceNode) {
             // Extract the exact cell and its value
             String cellReference = ((ReferenceNode) node).getReference();
-            Object value         = getReferenceValue(cellReference, model);
+            DType<?> value         = getReferenceValue(cellReference, model);
 
             // Set the value from given table into the node
             ((ReferenceNode) node).setValue(value);
@@ -72,7 +75,7 @@ public class ASTree {
      * @return           Cell value.
      * @throws Exception In case of cell range not being a singular cell.
      */
-    public String getReferenceValue(String range, TableModel model) throws Exception {
+    public DType<?> getReferenceValue(String range, TableModel model) throws Exception {
         String leftCell  = range.substring(0, range.indexOf(":"));
         String rightCell = range.substring(range.indexOf(":") + 1);
 
@@ -85,7 +88,7 @@ public class ASTree {
         int col = leftCell.charAt(0) - 'A' + 1;
         int row = Integer.parseInt(leftCell.substring(1)) - 1;
 
-        return (String) model.getValueAt(row, col);
+        return (DType<?>) model.getValueAt(row, col);
     }
 
     /**

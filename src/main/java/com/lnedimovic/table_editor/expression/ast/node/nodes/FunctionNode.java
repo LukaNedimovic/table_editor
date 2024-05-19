@@ -1,7 +1,9 @@
 package com.lnedimovic.table_editor.expression.ast.node.nodes;
 
+import com.lnedimovic.table_editor.dtype.DType;
 import com.lnedimovic.table_editor.expression.ast.node.Node;
 import com.lnedimovic.table_editor.expression.function.Function;
+import com.lnedimovic.table_editor.expression.operation.OperationSet;
 
 /**
  * <code>FunctionNode</code> is a Node resembling a function of variable length of parameters.
@@ -33,10 +35,10 @@ public class FunctionNode extends Node {
      * @throws Exception
      */
     @Override
-    public Object evaluate() throws Exception {
-        Object[] childEvaluations = new Object[arguments.length];
+    public DType<?> evaluate(OperationSet operations) throws Exception {
+        DType<?>[] childEvaluations = new DType[arguments.length];
         for (int i = 0; i < arguments.length; i++) {
-            childEvaluations[i] = arguments[i].evaluate();
+            childEvaluations[i] = (DType<?>) arguments[i].evaluate(operations);
         }
 
         return function.evaluate(childEvaluations);

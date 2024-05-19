@@ -1,5 +1,7 @@
 package com.lnedimovic.table_editor.expression.function.functions;
 
+import com.lnedimovic.table_editor.dtype.DType;
+import com.lnedimovic.table_editor.dtype.DTypeDouble;
 import com.lnedimovic.table_editor.expression.function.Function;
 
 import java.lang.reflect.Constructor;
@@ -14,7 +16,7 @@ public class ConstPI extends Function {
      * @throws Exception  In case of invalid number of parameters.
      */
     public ConstPI(String id) throws Exception {
-        super(id, Double.class);
+        super(id, DTypeDouble.class);
     }
 
     /**
@@ -23,19 +25,20 @@ public class ConstPI extends Function {
      * @throws Exception In case of invalid number of arguments or invalid values.
      */
     @Override
-    public Object evaluate(Object... args) throws Exception {
+    public DType<?> evaluate(DType<?>... args) throws Exception {
         if (args.length != 0) {
-            throw new Exception("ConstPI() -> double: Function doesn't accept any arguments.");
+            throw new Exception("ConstPI() -> DTypeDouble: Function doesn't accept any arguments.");
         }
 
-        Object result = Math.PI;
+        convertToValidDTypes(args);
+
+        DTypeDouble result = new DTypeDouble(Math.PI);
 
         Class<?> returnType = getReturnType();
-        Class<?> primitiveTypeForConstructor = getPrimitiveType(returnType);
-        Constructor<?> constructor = returnType.getConstructor(primitiveTypeForConstructor);
+        Constructor<?> constructor = returnType.getConstructor(DTypeDouble.class);
 
         // Create an instance
-        return constructor.newInstance(result);
+        return (DType<?>) constructor.newInstance(result);
     }
 
     public boolean validValue(Object obj) {

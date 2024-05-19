@@ -1,8 +1,11 @@
 package com.lnedimovic.table_editor.expression.function.functions;
 
+import com.lnedimovic.table_editor.dtype.DType;
+import com.lnedimovic.table_editor.dtype.DTypeDouble;
 import com.lnedimovic.table_editor.expression.function.Function;
 
 import java.lang.reflect.Constructor;
+import java.security.spec.RSAOtherPrimeInfo;
 
 /**
  * Abs is a function resembling standard mathematical absolute value function, i.e. abs(-5) = abs(5) = 5.
@@ -14,7 +17,7 @@ public class Abs extends Function {
      * @throws Exception  In case of invalid number of parameters.
      */
     public Abs(String id) throws Exception {
-        super(id, Double.class, Double.class);
+        super(id, DTypeDouble.class, DTypeDouble.class);
     }
 
     /**
@@ -24,28 +27,22 @@ public class Abs extends Function {
      * @throws Exception In case of invalid number of arguments or invalid values.
      */
     @Override
-    public Object evaluate(Object... args) throws Exception {
+    public DType<?> evaluate(DType<?>... args) throws Exception {
         if (args.length != 1) {
-            throw new Exception("Abs(double) -> double: Function accepts only one argument");
+            throw new Exception("Abs(DTypeDouble) -> DTypeDouble: Function accepts only one argument");
         }
 
-        Object value = args[0];
-        if (!validValue(value)) {
-            throw new Exception("Abs(double) -> double: Invalid value provided.");
-        }
+        convertToValidDTypes(args);
 
-        if (value instanceof String) {
-            value = Double.parseDouble((String) value);
-        }
+        DTypeDouble operand = (DTypeDouble) args[0];
 
-        Object result = Math.abs((Double) value);
+        DTypeDouble result = new DTypeDouble(Math.abs(operand.getValue()));
 
         Class<?> returnType = getReturnType();
-        Class<?> primitiveTypeForConstructor = getPrimitiveType(returnType);
-        Constructor<?> constructor = returnType.getConstructor(primitiveTypeForConstructor);
+        Constructor<?> constructor = returnType.getConstructor(DTypeDouble.class);
 
         // Create an instance
-        return constructor.newInstance(result);
+        return (DType<?>) constructor.newInstance(result);
     }
 
     public boolean validValue(Object obj) {

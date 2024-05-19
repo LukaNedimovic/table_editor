@@ -8,7 +8,7 @@ package com.lnedimovic.table_editor.expression.operation;
  *
  * Every operation implemented inherits from this class.
  */
-public abstract class Operation {
+public class Operation {
     /**
      * Id of operation, i.e. it's symbol. For example, in standard mathematical notation, addition's id is a "+", while exponentiation's is "^".
      * Id can be set to non-standard values, i.e. it is entirely possible to set addition's id to be a "~", or something else, and still get the same functionality.
@@ -36,9 +36,10 @@ public abstract class Operation {
      * @param id         Symbol defining the operation.
      * @param precedence Precedence of operation in general sense.
      */
-    public Operation(String id, int precedence) {
+    public Operation(String id, int precedence, boolean isUnary) {
         this.id = id;
         this.precedence = precedence;
+        this.isUnary = isUnary;
     }
 
     /**
@@ -64,15 +65,6 @@ public abstract class Operation {
 
         return false;
     }
-
-    /**
-     * Abstract method, to be overridden by every operation created, that defines how operation should be evaluated.
-     * This is the "core" of operation - it is the place where the developer encodes the logic of each operation and makes it scalable and highly flexible.
-     * @param args        Array of objects passed into given operation. For unary, it is a singular object; for binary, there are two.
-     * @return            Result of operation evaluation.
-     * @throws Exception  In case of invalid number of arguments or values.
-     */
-    public abstract Object evaluate(Object... args) throws Exception;
 
     /**
      * @return <code>Operation</code>'s id (representation symbol).

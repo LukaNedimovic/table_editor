@@ -1,5 +1,7 @@
 package com.lnedimovic.table_editor.expression.function;
 
+import com.lnedimovic.table_editor.dtype.DType;
+
 import java.util.Arrays;
 
 /**
@@ -31,6 +33,7 @@ public abstract class Function {
      * As of now, every function accepts Double parameter type, but this approach makes it very flexible to test whether certain value can even be used by a function.
      */
     private Class<?>[] parameterTypes;
+
     /**
      * Return type of the function.
      * As of now, it is only Double.
@@ -53,8 +56,10 @@ public abstract class Function {
 
         this.arity = types.length - 1; // Arity is defined as the number of arguments inside a function
 
-        this.parameterTypes = new Class<?>[arity]; // Up until last element are the input types
-        this.parameterTypes = Arrays.copyOfRange(parameterTypes, 0, arity);
+        this.parameterTypes = new Class[arity]; // Up until last element are the input types
+        for (int i = 0; i < arity; i++) {
+            this.parameterTypes[i] = types[i];
+        }
 
         this.returnType = types[arity]; // Last element of types is the return type
     }
@@ -66,7 +71,7 @@ public abstract class Function {
      * @return           Result of function evaluation.
      * @throws Exception In case of invalid number of arguments or invalid data.
      */
-    public abstract Object evaluate(Object... args) throws Exception;
+    public abstract DType<?> evaluate(DType<?>... args) throws Exception;
 
     /**
      * @param type
@@ -110,6 +115,18 @@ public abstract class Function {
 
         return false;
     }
+
+    public DType<?> convertToDType(DType<?> obj, Class<?> type) throws Exception {
+        return (DType<?>) type.getDeclaredConstructor(obj.getClass()).newInstance(obj);
+    }
+
+    public void convertToValidDTypes(DType<?>[] args) throws Exception {
+        for (int i = 0; i < arity; i++) {
+            args[i] = convertToDType(args[i], parameterTypes[i]);
+        }
+    }
+
+
     public String getId() {
         return id;
     }
