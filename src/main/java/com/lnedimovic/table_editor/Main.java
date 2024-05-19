@@ -87,7 +87,9 @@ public class Main {
      *   (4) Subtraction    - binary "p - q", subtracts two numbers
      *   (5) Multiplication - binary "p * q", multiplies two numbers
      *   (6) Division       - binary "p / q", divides two numbers
-     *   (7) Exponentiation - binary "p ^ q ", calculates p to the power of q
+     *   (7) Exponentiation - binary "p ^ q", calculates p to the power of q
+     *   (8) LessThan       - binary "p < q", returns 1.0 if p < q, otherwise 0.0
+     *   (9) GreaterThan    - binary "p > q", returns 0.0 if p > q, otherwise 0.0
      * <p>
      * It is possible to expand upon this set of operations with custom ones.
      * They are expected to be created by the developer themselves, keeping track of whether any have same operators.
@@ -108,7 +110,11 @@ public class Main {
 
         Operation exp  = new Exponentiation("^", 400);
 
-        return new Operation[]{id, neg, add, sub, mul, div, exp};
+        // Logical operations are also supported
+        Operation lt   = new LessThan("<", 50);
+        Operation gt   = new GreaterThan(">", 50);
+
+        return new Operation[]{id, neg, add, sub, mul, div, exp, lt, gt};
     }
 
     /**
