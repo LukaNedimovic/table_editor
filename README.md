@@ -82,8 +82,8 @@ cd table_editor
 
 <tr>
   <td> <code>=ifeq(pow(5, 2), 25)</code> </td>
-  <td> <code>True</code> </td>
-  <td> Conditions can be implemented, too! </td>
+  <td> <code>False</code> </td>
+  <td> <code>pow(5, 2)</code> returns <code>25.0</code>, which is not the same as <code>25</code>.</td>
 </tr>
 
 <tr>

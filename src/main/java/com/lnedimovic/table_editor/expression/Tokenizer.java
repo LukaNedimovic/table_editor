@@ -113,7 +113,7 @@ public class Tokenizer {
                     Token lastToken = tokens.get(tokens.size() - 1); // tokens.size() > 0, otherwise would fall into previous condition
 
                     // Unary operation can come after a "(" (e.g. (-5 + ...)), a "," (e.g. pow(..., -5)), or another operation (e.g. --5)
-                    if (lastToken.equals("(") || expression.charAt(pos - 1) == ',' || lastToken.getType() == TokenType.OPERATION) {
+                    if (lastToken.getValue().getValue().equals("(") || expression.charAt(pos - 1) == ',' || lastToken.getType() == TokenType.OPERATION) {
                         // Try finding a unary operation with given symbol
                         Operation foundOperation = operations.find(Character.toString(curr), true);
                         if (foundOperation != null) {
