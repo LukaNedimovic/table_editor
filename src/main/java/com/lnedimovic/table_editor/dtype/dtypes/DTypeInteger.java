@@ -1,4 +1,6 @@
-package com.lnedimovic.table_editor.dtype;
+package com.lnedimovic.table_editor.dtype.dtypes;
+
+import com.lnedimovic.table_editor.dtype.DType;
 
 public class DTypeInteger implements DType<Integer> {
     private Integer value;
@@ -12,6 +14,9 @@ public class DTypeInteger implements DType<Integer> {
     public DTypeInteger(String value) {
         this.value = Integer.parseInt(value);
     }
+    public DTypeInteger(Boolean value) {
+        this.value = value ? 1 : 0;
+    }
 
     public DTypeInteger(DTypeInteger obj) {
         this.value = obj.getValue();
@@ -22,15 +27,8 @@ public class DTypeInteger implements DType<Integer> {
     public DTypeInteger(DTypeString obj) {
         this.value = Integer.parseInt(obj.getValue());
     }
-
-    @Override
-    public Integer getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(Integer value) {
-        this.value = value;
+    public DTypeInteger(DTypeBoolean obj) {
+        this.value = obj.getValue() ? 1 : 0;
     }
 
     @Override
@@ -47,16 +45,6 @@ public class DTypeInteger implements DType<Integer> {
         return value.equals(objInteger.value);
     }
 
-    // CONVERSIONS
-
-    public DTypeDouble toDTypeDouble() {
-        return new DTypeDouble(value.doubleValue());
-    }
-
-    public DTypeString toDTypeString() {
-        return new DTypeString(value.toString());
-    }
-
     // OPERATIONS
 
     public DType<?> id() throws Exception {
@@ -71,11 +59,14 @@ public class DTypeInteger implements DType<Integer> {
         if (obj == null) {
             throw new Exception("DTypeInteger.add: Can't perform addition with null value.");
         }
+        if (obj instanceof DTypeInteger) {
+            return new DTypeInteger(value + ((DTypeInteger) obj).getValue());
+        }
         if (obj instanceof DTypeDouble) {
             return new DTypeDouble(value + ((DTypeDouble) obj).getValue());
         }
-        if (obj instanceof DTypeInteger) {
-            return new DTypeInteger(value + ((DTypeInteger) obj).getValue());
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeInteger(value + ((DTypeBoolean) obj).getIntegerValue());
         }
 
         throw new Exception(String.format("DTypeInteger.add: Can't perform addition with given type (%s).", obj.getClass()));
@@ -85,11 +76,14 @@ public class DTypeInteger implements DType<Integer> {
         if (obj == null) {
             throw new Exception("DTypeInteger.sub: Can't perform addition with null value.");
         }
+        if (obj instanceof DTypeInteger) {
+            return new DTypeInteger(value - ((DTypeInteger) obj).getValue());
+        }
         if (obj instanceof DTypeDouble) {
             return new DTypeDouble(value - ((DTypeDouble) obj).getValue());
         }
-        if (obj instanceof DTypeInteger) {
-            return new DTypeInteger(value - ((DTypeInteger) obj).getValue());
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeInteger(value - ((DTypeBoolean) obj).getIntegerValue());
         }
 
         throw new Exception(String.format("DTypeInteger.add: Can't perform addition with given type (%s).", obj.getClass()));
@@ -99,11 +93,18 @@ public class DTypeInteger implements DType<Integer> {
         if (obj == null) {
             throw new Exception("DTypeInteger.mul: Can't perform multiplication with null value.");
         }
+        if (obj instanceof DTypeInteger) {
+            return new DTypeInteger(value * ((DTypeInteger) obj).getValue());
+        }
         if (obj instanceof DTypeDouble) {
             return new DTypeDouble(value * ((DTypeDouble) obj).getValue());
         }
-        if (obj instanceof DTypeInteger) {
-            return new DTypeInteger(value * ((DTypeInteger) obj).getValue());
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeInteger(value * ((DTypeBoolean) obj).getIntegerValue());
+        }
+        if (obj instanceof DTypeString) {
+            String stringValue = ((DTypeString) obj).getValue();
+            return new DTypeString(stringValue.repeat(value));
         }
 
         throw new Exception(String.format("DTypeInteger.mul: Can't perform multiplication with given type (%s).", obj.getClass()));
@@ -125,6 +126,13 @@ public class DTypeInteger implements DType<Integer> {
             }
             return new DTypeDouble(value / ((DTypeDouble) obj).getValue());
         }
+        if (obj instanceof DTypeBoolean) {
+            Integer objValue = ((DTypeBoolean) obj).getIntegerValue();
+            if (objValue == 0) {
+                throw new Exception("DTypeInteger.div: Can't perform division with 0.");
+            }
+            return new DTypeInteger(value / objValue);
+        }
 
         throw new Exception(String.format("DTypeInteger.div: Can't perform division with given type (%s).", obj.getClass()));
     }
@@ -138,6 +146,9 @@ public class DTypeInteger implements DType<Integer> {
         }
         if (obj instanceof DTypeDouble) {
             return new DTypeDouble(Math.pow(value, ((DTypeDouble) obj).getValue()));
+        }
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeInteger(Math.pow(value, ((DTypeBoolean) obj).getIntegerValue()));
         }
 
         throw new Exception(String.format("DTypeInteger.exp: Can't perform exponentiation with given type (%s).", obj.getClass()));
@@ -159,10 +170,10 @@ public class DTypeInteger implements DType<Integer> {
             throw new Exception("DTypeInteger.lt: Can't perform \"less than\" with null value.");
         }
         if (obj instanceof DTypeInteger) {
-            return new DTypeInteger(value < ((DTypeInteger) obj).getValue() ? 1.0 : 0.0);
+            return new DTypeBoolean(value < ((DTypeInteger) obj).getValue() ? 1.0 : 0.0);
         }
         if (obj instanceof DTypeDouble) {
-            return new DTypeDouble(value.doubleValue() < ((DTypeDouble) obj).getValue() ? 1.0 : 0.0);
+            return new DTypeBoolean(value.doubleValue() < ((DTypeDouble) obj).getValue() ? 1.0 : 0.0);
         }
 
         throw new Exception(String.format("DTypeInteger.lt: Can't perform \"less than\" with given type (%s).", obj.getClass()));
@@ -173,12 +184,22 @@ public class DTypeInteger implements DType<Integer> {
             throw new Exception("DTypeInteger.gt: Can't perform \"greater than\" with null value.");
         }
         if (obj instanceof DTypeInteger) {
-            return new DTypeInteger(value > ((DTypeInteger) obj).getValue() ? 1.0 : 0.0);
+            return new DTypeBoolean(value > ((DTypeInteger) obj).getValue() ? 1.0 : 0.0);
         }
         if (obj instanceof DTypeDouble) {
-            return new DTypeDouble(value.doubleValue() > ((DTypeDouble) obj).getValue() ? 1.0 : 0.0);
+            return new DTypeBoolean(value.doubleValue() > ((DTypeDouble) obj).getValue() ? 1.0 : 0.0);
         }
 
         throw new Exception(String.format("DTypeInteger.gt: Can't perform \"greater than\" with given type (%s).", obj.getClass()));
     }
+
+    @Override
+    public Integer getValue() {
+        return value;
+    }
+    @Override
+    public void setValue(Integer value) {
+        this.value = value;
+    }
+
 }

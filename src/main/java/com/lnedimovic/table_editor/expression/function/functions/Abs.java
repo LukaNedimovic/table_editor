@@ -1,11 +1,10 @@
 package com.lnedimovic.table_editor.expression.function.functions;
 
 import com.lnedimovic.table_editor.dtype.DType;
-import com.lnedimovic.table_editor.dtype.DTypeDouble;
+import com.lnedimovic.table_editor.dtype.dtypes.DTypeDouble;
 import com.lnedimovic.table_editor.expression.function.Function;
 
 import java.lang.reflect.Constructor;
-import java.security.spec.RSAOtherPrimeInfo;
 
 /**
  * Abs is a function resembling standard mathematical absolute value function, i.e. abs(-5) = abs(5) = 5.

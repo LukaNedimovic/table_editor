@@ -25,8 +25,8 @@ public interface DType<T> {
     boolean equals(Object obj);
 
     // Unary operations (prefix)
-    DType<?> id()  throws Exception;
-    DType<?> neg() throws Exception;
+    DType<?> id()   throws Exception;
+    DType<?> neg()  throws Exception;
 
     // Binary operations
     // Arithmetic operations
@@ -40,5 +40,4 @@ public interface DType<T> {
     // Logic operations
     DType<?> lt(Object obj)  throws Exception;
     DType<?> gt(Object obj)  throws Exception;
-
 }

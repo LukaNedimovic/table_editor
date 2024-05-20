@@ -1,7 +1,6 @@
 package com.lnedimovic.table_editor.expression.token;
 
 import com.lnedimovic.table_editor.dtype.DType;
-import com.lnedimovic.table_editor.dtype.DTypeString;
 
 /**
  * <code>Token</code> is a building block of an expression.
@@ -99,12 +98,7 @@ public class Token {
             return (this.value.equals(((Token) obj).value) && this.type.equals(((Token) obj).type) && this.related.equals(((Token) obj).related));
         }
         if (obj instanceof String) {
-            if (value instanceof DTypeString) {
-                return value.getValue().equals(obj.toString());
-            }
-            else {
-                return false;
-            }
+            return value.equals(obj);
         }
 
         return false;

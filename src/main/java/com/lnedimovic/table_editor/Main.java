@@ -6,12 +6,9 @@ import java.util.List;
 
 // DTypes
 import com.lnedimovic.table_editor.dtype.DType;
-import com.lnedimovic.table_editor.dtype.DTypeDouble;
-import com.lnedimovic.table_editor.dtype.DTypeInteger;
-import com.lnedimovic.table_editor.dtype.DTypeString;
+import com.lnedimovic.table_editor.dtype.dtypes.DTypeInteger;
 
 // Operations and Functions
-import com.lnedimovic.table_editor.expression.ast.ASTree;
 import com.lnedimovic.table_editor.expression.operation.Operation;
 import com.lnedimovic.table_editor.expression.operation.OperationSet;
 
@@ -25,7 +22,6 @@ import com.lnedimovic.table_editor.expression.Tokenizer;
 // Table
 import javax.swing.*;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.lnedimovic.table_editor.expression.token.Token;
 import com.lnedimovic.table_editor.table.view.TableView;
 
 /**
@@ -49,12 +45,6 @@ public class Main {
         // Create tokenizers and parsers for given set of operations
         Tokenizer tokenizer = new Tokenizer(operations, functions);
         Parser parser       = new Parser(operations, functions);
-
-        ArrayList<Token> tokens = tokenizer.tokenize("=max(min(2, 1), 5) + e()");
-
-        ASTree tree = parser.parseTokens(tokens);
-        DType<?> result = tree.evaluate(operations);
-        System.out.println("Eval: " + result);
 
         // Using modern custom UI
         FlatMacDarkLaf.setup();
@@ -160,11 +150,16 @@ public class Main {
 
             // Binary functions
             Function pow  = new Pow("pow");
+            Function gcd  = new GCD("gcd");
+            Function lcm  = new LCM("lcm");
 
             Function min  = new Min("min");
             Function max  = new Max("max");
 
-            functions = new Function[]{e, pi, abs, sqrt, pow, min, max};
+            // Conditional functions also exist
+            Function ifeq = new IFEQ("ifeq");
+
+            functions = new Function[]{e, pi, abs, sqrt, pow, gcd, lcm, min, max, ifeq};
         }
         catch (Exception e) {
             System.out.println("Error while setting up operations: " + e.getMessage());

@@ -59,7 +59,7 @@ public class TableModel extends AbstractTableModel {
      * @return           String representation of evaluation result, if formula; null, otherwise.
      * @throws Exception In case of invalid expression
      */
-    public String checkForFormula(String expression) throws Exception {
+    public DType<?> checkForFormula(String expression) throws Exception {
         if (expression.startsWith("=")) {
             // First tokenize the expression
             ArrayList<Token> tokens = tokenizer.tokenize(expression);
@@ -71,7 +71,7 @@ public class TableModel extends AbstractTableModel {
             expressionTree.fillReferences(expressionTree.getRoot(), this);
 
             // Evaluate and return the value
-            return String.valueOf(expressionTree.evaluate(operations));
+            return expressionTree.evaluate(operations);
         }
         else {
             return null;

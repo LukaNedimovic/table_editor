@@ -1,4 +1,0 @@
-(1) GCD(x, y), LCM(x, y)
-(2) AND, OR, XOR, NOT
-(3) IFEQ
-(4) Arrays

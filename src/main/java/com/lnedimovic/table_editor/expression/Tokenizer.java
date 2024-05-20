@@ -1,7 +1,7 @@
 package com.lnedimovic.table_editor.expression;
 
 import com.lnedimovic.table_editor.dtype.DTypeFactory;
-import com.lnedimovic.table_editor.dtype.DTypeString;
+import com.lnedimovic.table_editor.dtype.dtypes.DTypeString;
 import com.lnedimovic.table_editor.expression.operation.Operation;
 import com.lnedimovic.table_editor.expression.function.Function;
 
@@ -196,7 +196,7 @@ public class Tokenizer {
                         tokens.add(new Token(new DTypeString(functionName), foundFunction, TokenType.FUNCTION));
                     }
                     else {
-                        throw new Exception("Invalid function name.");
+                        tokens.add(new Token(new DTypeString(functionName), null, TokenType.STRING));
                     }
                 }
             }
@@ -226,6 +226,11 @@ public class Tokenizer {
 
             else if (curr == ',') {
                 tokens.add(new Token(new DTypeString(","), "", TokenType.COMMA));
+                pos++;
+            }
+
+            else if (curr == '"') {
+                tokens.add(new Token(new DTypeString("\""), "", TokenType.QUOTATION_MARK));
                 pos++;
             }
 
@@ -410,9 +415,9 @@ public class Tokenizer {
         characterBuffer.clear();
 
         // After a function identifier, "(" must come
-        if (pos >= expression.length() || expression.charAt(pos) != '(') {
-            throw new Exception("Improperly named function token.");
-        }
+//        if (pos >= expression.length() || expression.charAt(pos) != '(') {
+//            throw new Exception("Improperly named function token.");
+//        }
 
         return functionName;
     }

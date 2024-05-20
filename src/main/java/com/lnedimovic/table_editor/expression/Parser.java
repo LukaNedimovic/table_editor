@@ -1,8 +1,7 @@
 package com.lnedimovic.table_editor.expression;
 
 // Operation and Function
-import com.lnedimovic.table_editor.dtype.DTypeDouble;
-import com.lnedimovic.table_editor.dtype.DTypeString;
+import com.lnedimovic.table_editor.dtype.dtypes.DTypeString;
 import com.lnedimovic.table_editor.expression.operation.Operation;
 import com.lnedimovic.table_editor.expression.function.Function;
 
@@ -148,11 +147,11 @@ public class Parser {
 
         // Parse the token according to the grammar
         switch (tokenType) {
-            case PARENTHESIS:
-                DTypeString value = (DTypeString) token.getValue().getValue();
+            case PARENTHESIS: {
+                String value = (String) token.getValue().getValue();
 
                 // Must be a "("
-                if (token.equals("(")) {
+                if (value.equals("(")) {
                     left = parse(0); // Parse what is inside. Parenthesis resets the precedence.
 
                     // For every open parenthesis, there must come a closed one
@@ -163,14 +162,14 @@ public class Parser {
 
                     // Skip the ")" token
                     tokensIdx++;
-                }
-                else {
+                } else {
                     throw new Exception("Expected value.");
                 }
 
                 break;
+            }
 
-            case OPERATION:
+            case OPERATION: {
                 // Must be a unary operation. Binary operations are parsed separately below.
 
                 if (((Operation) related).isUnary()) {
@@ -180,21 +179,22 @@ public class Parser {
 
                     // Store the operation itself and  what comes after the unary operation
                     left = new UnaryOpNode((Operation) related, unaryValue);
-                }
-                else {
+                } else {
                     throw new Exception("Invalid expression. Expected unary operation.");
                 }
 
                 break;
+            }
 
-            case NUMERICAL_CONSTANT:
+            case NUMERICAL_CONSTANT: {
                 // Create a new node, keeping the numerical constant value
                 left = new ConstantNode(token.getValue());
                 tokensIdx++;
 
                 break;
+            }
 
-            case FUNCTION:
+            case FUNCTION: {
                 // Get the function inside the token and the arity of it.
                 Function function = (Function) (token.getRelated());
                 int arity = function.getArity();
@@ -203,8 +203,8 @@ public class Parser {
                 if (arity == 0) {
                     // Make sure that there are enough tokens so "(" and ")" can appear, then test for their existence
                     if (tokensIdx >= tokens.length - 1 ||
-                        !tokens[tokensIdx + 1].equals("(") ||
-                        !tokens[tokensIdx + 2].equals(")")) {
+                            !tokens[tokensIdx + 1].getValue().getValue().equals("(") ||
+                            !tokens[tokensIdx + 2].getValue().getValue().equals(")")) {
                         throw new Exception("Invalid function without parameters.");
                     }
 
@@ -220,7 +220,7 @@ public class Parser {
 
                 // Test for the existence of "(" for function parameters
                 token = tokens[++tokensIdx];
-                if (!token.equals("(")) {
+                if (!token.getValue().getValue().equals("(")) {
                     throw new Exception("Invalid expression. Expected a '(', found: " + token);
                 }
 
@@ -229,12 +229,12 @@ public class Parser {
                 int parametersIdx = 0; // Index of the free location to store the argument
 
                 // Parse until ")" is encountered (end of function)
-                while (!tokens[tokensIdx].equals(")")) {
+                while (!tokens[tokensIdx].getValue().getValue().equals(")")) {
                     Node parameter = parse(0); // Parse the parameter
 
                     // Parameters must be separated by commas, or if there are no more, ")" is expected
                     if (tokens[tokensIdx].getType() != TokenType.COMMA &&
-                        !tokens[tokensIdx].getValue().getValue().equals(")")) {
+                            !tokens[tokensIdx].getValue().getValue().equals(")")) {
                         throw new Exception("Invalid expression. Expected comma.");
                     }
                     // Parameter overflow (index out of bounds)
@@ -256,16 +256,50 @@ public class Parser {
                 tokensIdx++;
 
                 break;
+            }
 
-            case REFERENCE:
+            case REFERENCE: {
                 // Cell reference is handled by simply passing the value of range
                 left = new ReferenceNode(token.getValue().toString());
                 tokensIdx++;
 
                 break;
+            }
 
-            default:
+            case QUOTATION_MARK: {
+                // Whatever comes until next occurence of " symbol, will be rendered as a string.
+                tokensIdx++;
+
+                String stringValue = "";
+                while (tokensIdx < tokens.length && tokens[tokensIdx].getType() != TokenType.QUOTATION_MARK) {
+                    token = tokens[tokensIdx];
+                    stringValue += token.getValue();
+
+                    tokensIdx++;
+                }
+
+                // Another " is expected after the first one
+                if (tokensIdx >= tokens.length || tokens[tokensIdx].getType() != TokenType.QUOTATION_MARK) {
+                    throw new Exception("Invalid expression. Expected quotation mark.");
+                }
+
+                left = new ConstantNode(new DTypeString(stringValue));
+                tokensIdx++;
+
+                if (tokensIdx < tokens.length && tokens[tokensIdx].getType() != TokenType.OPERATION) {
+                    throw new Exception("Invalid expression. Expected operator.");
+                }
+
+                break;
+            }
+
+            case STRING: {
+                throw new Exception("Invalid expression. String must be enclosed within \"");
+            }
+
+            default: {
                 throw new Exception("Invalid expression. Expected a value.");
+            }
         }
 
         // Parsing the binary operations

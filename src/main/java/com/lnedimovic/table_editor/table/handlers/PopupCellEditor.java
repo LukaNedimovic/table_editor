@@ -1,5 +1,6 @@
 package com.lnedimovic.table_editor.table.handlers;
 
+import com.lnedimovic.table_editor.dtype.DType;
 import com.lnedimovic.table_editor.table.model.TableModel;
 
 import javax.swing.*;
@@ -77,17 +78,13 @@ public class PopupCellEditor extends AbstractCellEditor implements TableCellEdit
 
             // Check if the entered expression is formula and try evaluating it
             try {
-                String result = model.checkForFormula(expression);
+                DType<?> result = model.checkForFormula(expression);
                 if (result == null) {
                     newValue = expression;
                 }
                 else {
-                    // Convert given result to the double datatype
-                    Double resultAsDouble = Double.parseDouble(result);
-                    newValue = resultAsDouble.toString();
-                    newValue = result;
+                    newValue = result.toString();
                 }
-
                 textField.setText(newValue);
             }
             // If error occurs, show the error message to the user.

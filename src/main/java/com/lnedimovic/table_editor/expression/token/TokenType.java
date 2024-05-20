@@ -30,5 +30,16 @@ public enum TokenType {
     /**
      * Standard comma, i.e. "," character.
      */
-    COMMA
+    COMMA,
+
+    /**
+     * Standard quotation mark, i.e. " character.
+     */
+    QUOTATION_MARK,
+
+    /**
+     * Standard String, sequence of characters.
+     */
+    STRING,
+
 }
