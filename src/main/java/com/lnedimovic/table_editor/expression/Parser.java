@@ -1,6 +1,7 @@
 package com.lnedimovic.table_editor.expression;
 
 // Operation and Function
+import com.lnedimovic.table_editor.dtype.dtypes.DTypeBoolean;
 import com.lnedimovic.table_editor.dtype.dtypes.DTypeString;
 import com.lnedimovic.table_editor.expression.operation.Operation;
 import com.lnedimovic.table_editor.expression.function.Function;
@@ -286,8 +287,11 @@ public class Parser {
                 left = new ConstantNode(new DTypeString(stringValue));
                 tokensIdx++;
 
-                if (tokensIdx < tokens.length && tokens[tokensIdx].getType() != TokenType.OPERATION) {
-                    throw new Exception("Invalid expression. Expected operator.");
+                if (tokensIdx < tokens.length &&
+                    tokens[tokensIdx].getType() != TokenType.OPERATION &&
+                    tokens[tokensIdx].getType() != TokenType.COMMA &&
+                    !(tokens[tokensIdx].getType() == TokenType.PARENTHESIS && tokens[tokensIdx].getValue().getValue().equals(")"))) {
+                    throw new Exception("Invalid expression. Expected an operator, comma, or a closed parenthesis, but found: " + tokens[tokensIdx].getValue());
                 }
 
                 break;
@@ -295,6 +299,20 @@ public class Parser {
 
             case STRING: {
                 throw new Exception("Invalid expression. String must be enclosed within \"");
+            }
+
+            case TRUE: {
+                left = new ConstantNode(new DTypeBoolean(true));
+                tokensIdx++;
+
+                break;
+            }
+
+            case FALSE: {
+                left = new ConstantNode(new DTypeBoolean(false));
+                tokensIdx++;
+
+                break;
             }
 
             default: {

@@ -47,6 +47,9 @@ public abstract class Function {
      * @throws Exception In case of invalid number of types.
      */
     public Function(String id, Class<?>... types) throws Exception {
+        if (!validId(id)) {
+            throw new Exception("Invalid function id");
+        }
         this.id = id;
 
         // As of now, functions without parameters are supported. Return type still has to be provided, though.
@@ -73,26 +76,12 @@ public abstract class Function {
      */
     public abstract DType<?> evaluate(DType<?>... args) throws Exception;
 
-    /**
-     * @param type
-     * @return           Primitive type for a given non-primitive one.
-     * @throws Exception In case of invalid type provided (currently supported are Integer, Long, Float, and Double).
-     */
-    public Class<?> getPrimitiveType(Class<?> type) throws Exception {
-        if (type == Integer.class) {
-            return int.class;
+    public boolean validId(String id) {
+        boolean validCharacters = true;
+        for (int i = 1; i < id.length(); i++) {
+            validCharacters &= Character.isLetterOrDigit(id.charAt(i));
         }
-        if (type == Long.class) {
-            return long.class;
-        }
-        if (type == Float.class) {
-            return float.class;
-        }
-        if (type == Double.class) {
-            return double.class;
-        }
-
-        throw new Exception("Illegal type provided.");
+        return !id.isEmpty() && Character.isLowerCase(id.charAt(0)) && validCharacters;
     }
 
     /**

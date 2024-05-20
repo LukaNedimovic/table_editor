@@ -42,4 +42,16 @@ public enum TokenType {
      */
     STRING,
 
+    /**
+     * Boolean False.
+     */
+    TRUE,
+
+    /**
+     * Boolean True.
+     */
+    FALSE,
+
+
+
 }

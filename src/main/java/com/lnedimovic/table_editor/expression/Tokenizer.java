@@ -141,47 +141,60 @@ public class Tokenizer {
 
                 pos++;
             }
-            // Cell references and function identifiers start with letters
+            // Cell references, function identifiers and "True / False" start with letters
             else if (Character.isLetter(curr)) {
                 // Cell references are written in uppercase
                 if (Character.isUpperCase(curr)) {
                     // Make sure there is nothing unprocessed
                     checkBuffers(characterBuffer, digitBuffer);
 
-                    // Cell references include singular cells (e.g. B2) and cell ranges (e.g. C2:D3)
-
-                    // Parse singular cell of expression (left part)
-                    String leftCell = parseCell(expression, characterBuffer, digitBuffer);
-
-                    String rightCell;
-                    // In case cell range is referenced
-                    if (pos < expression.length() && expression.charAt(pos) == ':') {
-                        if (pos + 2 >= expression.length()) {
-                            throw new Exception("Invalid cell reference (impossible to parse another cell after ':')");
+                    // Check if "True / False"
+                    String possibleBoolean = checkForBooleanValue(expression);
+                    if (possibleBoolean != null) {
+                        if (possibleBoolean.equals("True")) {
+                            tokens.add(new Token(new DTypeString(possibleBoolean), operations, TokenType.TRUE));
                         }
-                        pos++; // Move from ":" to start of another cell reference
-
-                        rightCell = parseCell(expression, characterBuffer, digitBuffer);
+                        else {
+                            tokens.add(new Token(new DTypeString(possibleBoolean), operations, TokenType.FALSE));
+                        }
                     }
-
-                    // Single cell references are, for the sake of convenience, turned into ranges
-                    // Naturally, a single cell range contains only itself as start and as an end (e.g. A3:A3)
                     else {
-                        rightCell = leftCell;
+                        System.out.println(expression.substring(pos, pos + 4));
+                        // Cell references include singular cells (e.g. B2) and cell ranges (e.g. C2:D3)
+
+                        // Parse singular cell of expression (left part)
+                        String leftCell = parseCell(expression, characterBuffer, digitBuffer);
+
+                        String rightCell;
+                        // In case cell range is referenced
+                        if (pos < expression.length() && expression.charAt(pos) == ':') {
+                            if (pos + 2 >= expression.length()) {
+                                throw new Exception("Invalid cell reference (impossible to parse another cell after ':')");
+                            }
+                            pos++; // Move from ":" to start of another cell reference
+
+                            rightCell = parseCell(expression, characterBuffer, digitBuffer);
+                        }
+
+                        // Single cell references are, for the sake of convenience, turned into ranges
+                        // Naturally, a single cell range contains only itself as start and as an end (e.g. A3:A3)
+                        else {
+                            rightCell = leftCell;
+                        }
+
+                        // Test the cell range for validity before continuing.
+                        if (!validCellRange(leftCell, rightCell)) {
+                            throw new Exception("Invalid cell range provided.");
+                        }
+
+                        // Handling two cases in uniform way:
+                        // (1) Single-cell reference, e.g. A2:A2
+                        // (2) Cell-range reference,  e.g. A2:B4
+                        String completeReference = leftCell + ":" + rightCell;
+
+                        // Create a new cell reference token and add it to the list of tokens
+                        tokens.add(new Token(new DTypeString(completeReference), "", TokenType.REFERENCE));
                     }
-
-                    // Test the cell range for validity before continuing.
-                    if(!validCellRange(leftCell, rightCell)) {
-                        throw new Exception("Invalid cell range provided.");
-                    }
-
-                    // Handling two cases in uniform way:
-                    // (1) Single-cell reference, e.g. A2:A2
-                    // (2) Cell-range reference,  e.g. A2:B4
-                    String completeReference = leftCell + ":" + rightCell;
-
-                    // Create a new cell reference token and add it to the list of tokens
-                    tokens.add(new Token(new DTypeString(completeReference), "", TokenType.REFERENCE));
                 }
 
                 // Named functions are written in lowercase
@@ -252,6 +265,19 @@ public class Tokenizer {
         expression = expression.replaceAll("\n", "");
 
         return expression;
+    }
+
+    private String checkForBooleanValue(String expression) {
+        if (pos < expression.length() - 4 + 1 && expression.startsWith("True", pos)) {
+            pos += 4;
+            return "True";
+        }
+        if (pos < expression.length() - 5 + 1 && expression.startsWith("False", pos)) {
+            pos += 5;
+            return "False";
+        }
+
+        return null;
     }
 
     /**
@@ -392,7 +418,7 @@ public class Tokenizer {
      */
     public boolean validNamedFunctionCharacter(Character chr) {
         // Function identifiers may only contain letters and digits
-        return (Character.isLetter(chr) || Character.isDigit(chr));
+        return (Character.isLetterOrDigit(chr));
     }
 
     /**
