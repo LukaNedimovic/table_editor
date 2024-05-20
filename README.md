@@ -38,6 +38,7 @@ Even though it is a small project, there are some cool features, such as:
 <b>Table Editor</b> can be compiled and ran using <b>gradle</b>:
 <pre>
 <code>git clone https://github.com/LukaNedimovic/table_editor.git
+cd table_editor
 ./gradlew compileJava run</code>
 </pre>
 
