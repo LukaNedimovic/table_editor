@@ -33,6 +33,9 @@ public class Sqrt extends Function {
         convertToValidDTypes(args);
 
         DTypeDouble operand = (DTypeDouble) args[0];
+        if (operand.getValue() < 0) {
+            throw new Exception("Sqrt(DTypeDouble) -> DTypeDouble: Function does not accept negative values.");
+        }
 
         DTypeDouble result = new DTypeDouble(Math.sqrt(operand.getValue()));
 

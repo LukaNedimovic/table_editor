@@ -76,7 +76,16 @@ public class DTypeString implements DType<String> {
     @Override
     public DType<?> mul(Object obj) throws Exception {
         if (obj instanceof DTypeInteger) {
-            return new DTypeString(value.repeat(((DTypeInteger) obj).getValue()));
+            Integer repetitions = ((DTypeInteger) obj).getValue();
+            if (repetitions <= 0) {
+                throw new Exception("DTypeString.mul: Can't perform multiplication with negative value.");
+            }
+
+            return new DTypeString(value.repeat(repetitions));
+        }
+        if (obj instanceof DTypeBoolean) {
+            Boolean booleanValue = ((DTypeBoolean) obj).getValue();
+            return new DTypeString(booleanValue ? value : "");
         }
 
         throw new Exception(String.format("DTypeString.mul: Can't perform multiplication with given type (%s)", obj.getClass()));

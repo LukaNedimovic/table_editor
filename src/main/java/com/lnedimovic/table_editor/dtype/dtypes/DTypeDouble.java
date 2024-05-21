@@ -127,7 +127,7 @@ public class DTypeDouble implements DType<Double> {
             if (objValue == 0) {
                 throw new Exception("DTypeInteger.div: Can't perform division with 0.");
             }
-            return new DTypeBoolean(value / objValue);
+            return new DTypeDouble(value / objValue);
         }
 
         throw new Exception(String.format("DTypeDouble.div: Can't perform division with given type (%s).", obj.getClass()));
@@ -165,6 +165,9 @@ public class DTypeDouble implements DType<Double> {
             DTypeDouble objDouble = new DTypeDouble(((DTypeInteger) obj).getValue());
             return new DTypeBoolean(value < objDouble.getValue() ? 1.0 : 0.0);
         }
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeBoolean(value < ((DTypeBoolean) obj).getDoubleValue() ? 1.0 : 0.0);
+        }
 
         throw new Exception(String.format("DTypeDouble.lt: Can't perform \"less than\" with given type (%s).", obj.getClass()));
     }
@@ -179,6 +182,9 @@ public class DTypeDouble implements DType<Double> {
         if (obj instanceof DTypeInteger) {
             DTypeDouble objDouble = new DTypeDouble(((DTypeInteger) obj).getValue());
             return new DTypeBoolean(value > objDouble.getValue() ? 1.0 : 0.0);
+        }
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeBoolean(value > ((DTypeBoolean) obj).getDoubleValue() ? 1.0 : 0.0);
         }
 
         throw new Exception(String.format("DTypeDouble.gt: Can't perform \"greater than\" with given type (%s).", obj.getClass()));

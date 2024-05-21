@@ -80,12 +80,13 @@ public class DTypeBoolean implements DType<Boolean> {
             throw new Exception("DTypeBoolean.add: Can't perform addition with null value.");
         }
         if (obj instanceof DTypeDouble) {
-            System.out.println("DOUBLE: " + getDoubleValue());
             return new DTypeDouble(getDoubleValue() + ((DTypeDouble) obj).getValue());
         }
         if (obj instanceof DTypeInteger) {
-            System.out.println("Integer: " + getIntegerValue());
             return new DTypeInteger(getIntegerValue() + ((DTypeInteger) obj).getValue());
+        }
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeBoolean(value || ((DTypeBoolean) obj).getValue());
         }
 
         throw new Exception(String.format("DTypeBoolean.add: Can't perform addition with given type (%s).", obj.getClass()));
@@ -116,6 +117,13 @@ public class DTypeBoolean implements DType<Boolean> {
         if (obj instanceof DTypeInteger) {
             return new DTypeInteger(getIntegerValue() * ((DTypeInteger) obj).getValue());
         }
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeBoolean(value && ((DTypeBoolean) obj).getValue());
+        }
+        if (obj instanceof DTypeString) {
+            String stringValue = ((DTypeString) obj).getValue();
+            return new DTypeString(getValue() ? stringValue : "");
+        }
 
         throw new Exception(String.format("DTypeBoolean.mul: Can't perform multiplication with given type (%s).", obj.getClass()));
     }
@@ -124,17 +132,17 @@ public class DTypeBoolean implements DType<Boolean> {
         if (obj == null) {
             throw new Exception("DTypeBoolean.div: Can't perform division with null value.");
         }
-        if (obj instanceof DTypeInteger) {
-            if (((DTypeInteger) obj).getValue() == 0) {
-                throw new Exception("DTypeBoolean.div: Can't perform division with 0.");
-            }
-            return new DTypeInteger(getDoubleValue() / ((DTypeInteger) obj).getValue());
-        }
         if (obj instanceof DTypeDouble) {
             if (((DTypeDouble) obj).getValue() == 0) {
                 throw new Exception("DTypeBoolean.div: Can't perform division with 0.");
             }
             return new DTypeDouble(getIntegerValue() / ((DTypeDouble) obj).getValue());
+        }
+        if (obj instanceof DTypeInteger) {
+            if (((DTypeInteger) obj).getValue() == 0) {
+                throw new Exception("DTypeBoolean.div: Can't perform division with 0.");
+            }
+            return new DTypeInteger(getDoubleValue() / ((DTypeInteger) obj).getValue());
         }
 
         throw new Exception(String.format("DTypeBoolean.div: Can't perform division with given type (%s).", obj.getClass()));
@@ -142,6 +150,28 @@ public class DTypeBoolean implements DType<Boolean> {
 
     @Override
     public DType<?> exp(Object obj) throws Exception {
+        if (obj == null) {
+            throw new Exception("DTypeBoolean.exp: Can't perform division with null value.");
+        }
+        if (obj instanceof DTypeDouble) {
+            if (((((DTypeDouble) obj).getValue()) == 0) && (!value)) {
+                throw new Exception("DTypeBoolean.exp: 0^0 is undefined.");
+            }
+            return new DTypeBoolean(value);
+        }
+        if (obj instanceof DTypeInteger) {
+            if (((((DTypeInteger) obj).getValue()) == 0) && (!value)) {
+                throw new Exception("DTypeBoolean.exp: 0^0 is undefined.");
+            }
+            return new DTypeBoolean(value);
+        }
+        if (obj instanceof DTypeBoolean) {
+            if (!((((DTypeBoolean) obj).getValue())) && (!value)) {
+                throw new Exception("DTypeBoolean.exp: 0^0 is undefined.");
+            }
+            return new DTypeBoolean(value);
+        }
+
         throw new Exception("DTypeBoolean.exp: Exponentiation is undefined for DTypeBoolean.");
     }
 
@@ -151,7 +181,20 @@ public class DTypeBoolean implements DType<Boolean> {
             throw new Exception("DTypeBoolean.mod: Can't perform modulo with null value.");
         }
         if (obj instanceof DTypeInteger) {
-            return new DTypeInteger(getIntegerValue() % (((DTypeInteger) obj).getValue()));
+            Integer integerValue = ((DTypeInteger) obj).getValue();
+            if (integerValue == 0) {
+                throw new Exception("DTypeBoolean.mod: Can't perform modulo with 0.");
+            }
+
+            return new DTypeBoolean(getIntegerValue() % integerValue);
+        }
+        if (obj instanceof DTypeBoolean) {
+            Integer integerValue = ((DTypeBoolean) obj).getIntegerValue();
+            if (integerValue == 0) {
+                throw new Exception("DTypeBoolean.mod: Can't perform modulo with 0.");
+            }
+
+            return new DTypeBoolean(getIntegerValue() % integerValue);
         }
 
         throw new Exception(String.format("DTypeBoolean.exp: Can't perform modulo with given type (%s).", obj.getClass()));
@@ -162,11 +205,14 @@ public class DTypeBoolean implements DType<Boolean> {
         if (obj == null) {
             throw new Exception("DTypeBoolean.lt: Can't perform \"less than\" with null value.");
         }
+        if (obj instanceof DTypeDouble) {
+            return new DTypeBoolean(getDoubleValue() < ((DTypeDouble) obj).getValue() ? 1.0 : 0.0);
+        }
         if (obj instanceof DTypeInteger) {
             return new DTypeBoolean(getIntegerValue() < ((DTypeInteger) obj).getValue() ? 1.0 : 0.0);
         }
-        if (obj instanceof DTypeDouble) {
-            return new DTypeBoolean(getDoubleValue() < ((DTypeDouble) obj).getValue() ? 1.0 : 0.0);
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeBoolean((getIntegerValue() < ((DTypeBoolean) obj).getIntegerValue())? 1.0 : 0.0);
         }
 
         throw new Exception(String.format("DTypeBoolean.lt: Can't perform \"less than\" with given type (%s).", obj.getClass()));
@@ -177,11 +223,14 @@ public class DTypeBoolean implements DType<Boolean> {
         if (obj == null) {
             throw new Exception("DTypeBoolean.gt: Can't perform \"greater than\" with null value.");
         }
+        if (obj instanceof DTypeDouble) {
+            return new DTypeBoolean(getDoubleValue() > ((DTypeDouble) obj).getValue() ? 1.0 : 0.0);
+        }
         if (obj instanceof DTypeInteger) {
             return new DTypeBoolean(getIntegerValue() > ((DTypeInteger) obj).getValue() ? 1.0 : 0.0);
         }
-        if (obj instanceof DTypeDouble) {
-            return new DTypeBoolean(getDoubleValue() > ((DTypeDouble) obj).getValue() ? 1.0 : 0.0);
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeBoolean((getIntegerValue() > ((DTypeBoolean) obj).getIntegerValue())? 1.0 : 0.0);
         }
 
         throw new Exception(String.format("DTypeBoolean.gt: Can't perform \"greater than\" with given type (%s).", obj.getClass()));

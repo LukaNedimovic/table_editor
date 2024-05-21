@@ -23,7 +23,7 @@ public class TableModel extends AbstractTableModel {
     /**
      * Names of columns.
      */
-    private String[]           columnNames;
+    private String[]             columnNames;
 
     /**
      * Tokenizer used with the model.

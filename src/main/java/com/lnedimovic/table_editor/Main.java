@@ -22,6 +22,7 @@ import com.lnedimovic.table_editor.expression.Tokenizer;
 // Table
 import javax.swing.*;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.lnedimovic.table_editor.expression.token.Token;
 import com.lnedimovic.table_editor.table.view.TableView;
 
 /**
@@ -83,15 +84,16 @@ public class Main {
 
     /**
      * Creates the exemplary set of operations, namely:
-     *   (1) Identity       - unary "+p", takes no effect
-     *   (2) Negation       - unary "-p", negates the number
-     *   (3) Addition       - binary "p + ", adds two numbers
-     *   (4) Subtraction    - binary "p - q", subtracts two numbers
-     *   (5) Multiplication - binary "p * q", multiplies two numbers
-     *   (6) Division       - binary "p / q", divides two numbers
-     *   (7) Exponentiation - binary "p ^ q", calculates p to the power of q
-     *   (8) LessThan       - binary "p < q", returns 1.0 if p < q, otherwise 0.0
-     *   (9) GreaterThan    - binary "p > q", returns 0.0 if p > q, otherwise 0.0
+     *   (01) Identity       - unary "+p", takes no effect
+     *   (02) Negation       - unary "-p", negates the number
+     *   (03) Addition       - binary "p + ", adds two numbers
+     *   (04) Subtraction    - binary "p - q", subtracts two numbers
+     *   (05) Multiplication - binary "p * q", multiplies two numbers
+     *   (06) Division       - binary "p / q", divides two numbers
+     *   (07) Exponentiation - binary "p ^ q", calculates p to the power of q
+     *   (08) Modulo         - binary "p % q", calculates p modulo q
+     *   (09) LessThan       - binary "p < q", returns 1.0 if p < q, otherwise 0.0
+     *   (10) GreaterThan    - binary "p > q", returns 0.0 if p > q, otherwise 0.0
      * <p>
      * It is possible to expand upon this set of operations with custom ones.
      * They are expected to be created by the developer themselves, keeping track of whether any have same operators.
@@ -111,24 +113,28 @@ public class Main {
         Operation div  = new Operation("/", 200, false);
 
         Operation exp  = new Operation("^", 400, false);
+        Operation mod  = new Operation("%", 400, false);
 
         // Logical operations are also supported
         Operation lt   = new Operation("<", 50, false);
         Operation gt   = new Operation(">", 50, false);
 
-        Operation[] operations = new Operation[]{id, neg, add, sub, mul, div, exp, lt, gt};
+        Operation[] operations = new Operation[]{id, neg, add, sub, mul, div, exp, mod, lt, gt};
         return new OperationSet(operations);
     }
 
     /**
      * Creates the exemplary set of functions, namely:
-     *   (1) ConstE  - e(),        returns constant Math.E
-     *   (2) ConstPI - pi(),       returns constant Math.PI
-     *   (3) Abs     - abs(p),     returns absolute value of p
-     *   (4) Sqrt    - sqrt(p),    returns the square root of p
-     *   (5) Pow     - pow(p, q),  returns p to the power of q
-     *   (6) Min     - min(p, q),  returns the smaller element among p and q
-     *   (7) Max     - max(p, q),  returns the greater element among p and q
+     *   (01) ConstE  - e(),         returns constant Math.E
+     *   (02) ConstPI - pi(),        returns constant Math.PI
+     *   (03) Abs     - abs(p),      returns absolute value of p
+     *   (04) Sqrt    - sqrt(p),     returns the square root of p
+     *   (05) Pow     - pow(p, q),   returns p to the power of q
+     *   (06) GCD     - gcd(p, q),   returns the greatest common divisor of p and q
+     *   (07) LCM     - lcm(p, q),   returns the lowest common multiple of p and q
+     *   (08) Min     - min(p, q),   returns the smaller element among p and q
+     *   (09) Max     - max(p, q),   returns the greater element among p and q
+     *   (10) IFEQ    - ifeq(p, q),  returns whether p and q are equivalent (DType included)
      * <p>
      * It is possible to expand upon this set of functions with custom ones.
      * Functions may have any number of parameters, however their number is expected to be constant.

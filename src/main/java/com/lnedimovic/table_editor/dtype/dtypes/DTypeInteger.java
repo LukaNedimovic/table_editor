@@ -103,6 +103,10 @@ public class DTypeInteger implements DType<Integer> {
             return new DTypeInteger(value * ((DTypeBoolean) obj).getIntegerValue());
         }
         if (obj instanceof DTypeString) {
+            if (value < 0) {
+                throw new Exception("DTypeInteger.mul: Can't multiply a string with a non-positive integer.");
+            }
+
             String stringValue = ((DTypeString) obj).getValue();
             return new DTypeString(stringValue.repeat(value));
         }
@@ -159,7 +163,18 @@ public class DTypeInteger implements DType<Integer> {
             throw new Exception("DTypeInteger.mod: Can't perform modulo with null value.");
         }
         if (obj instanceof DTypeInteger) {
-            return new DTypeInteger(value % (((DTypeInteger) obj).getValue()));
+            int integerValue = ((DTypeInteger) obj).getValue();
+            if (integerValue == 0) {
+                throw new Exception("DTypeInteger.mod: Can't perform modulo with 0.");
+            }
+            return new DTypeInteger(value % integerValue);
+        }
+        if (obj instanceof DTypeBoolean) {
+            int integerValue = ((DTypeBoolean) obj).getIntegerValue();
+            if (integerValue == 0) {
+                throw new Exception("DTypeInteger.mod: Can't perform modulo with 0.");
+            }
+            return new DTypeInteger(value % integerValue);
         }
 
         throw new Exception(String.format("DTypeInteger.exp: Can't perform modulo with given type (%s).", obj.getClass()));
@@ -175,6 +190,9 @@ public class DTypeInteger implements DType<Integer> {
         if (obj instanceof DTypeDouble) {
             return new DTypeBoolean(value.doubleValue() < ((DTypeDouble) obj).getValue() ? 1.0 : 0.0);
         }
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeBoolean(value < ((DTypeBoolean) obj).getIntegerValue() ? 1.0 : 0.0);
+        }
 
         throw new Exception(String.format("DTypeInteger.lt: Can't perform \"less than\" with given type (%s).", obj.getClass()));
     }
@@ -188,6 +206,9 @@ public class DTypeInteger implements DType<Integer> {
         }
         if (obj instanceof DTypeDouble) {
             return new DTypeBoolean(value.doubleValue() > ((DTypeDouble) obj).getValue() ? 1.0 : 0.0);
+        }
+        if (obj instanceof DTypeBoolean) {
+            return new DTypeBoolean(value > ((DTypeBoolean) obj).getIntegerValue() ? 1.0 : 0.0);
         }
 
         throw new Exception(String.format("DTypeInteger.gt: Can't perform \"greater than\" with given type (%s).", obj.getClass()));

@@ -82,7 +82,7 @@ public class Tokenizer {
         }
 
         // Preprocess expression (i.e. remove whitespaces)
-        expression = preprocess(expression);
+        // expression = preprocess(expression);
         pos = 1;
 
         ArrayList<Token>     tokens          = new ArrayList<>(); // To be returned list of tokens
@@ -91,6 +91,11 @@ public class Tokenizer {
 
         // Parse for each character in the expression
         while (pos < expression.length()) {
+            skipWS(expression);
+            if (pos == expression.length()) {
+                break;
+            }
+
             char curr = expression.charAt(pos); // Current character
 
             // If current token represents an operation
@@ -113,7 +118,7 @@ public class Tokenizer {
                     Token lastToken = tokens.get(tokens.size() - 1); // tokens.size() > 0, otherwise would fall into previous condition
 
                     // Unary operation can come after a "(" (e.g. (-5 + ...)), a "," (e.g. pow(..., -5)), or another operation (e.g. --5)
-                    if (lastToken.getValue().getValue().equals("(") || expression.charAt(pos - 1) == ',' || lastToken.getType() == TokenType.OPERATION) {
+                    if (lastToken.getValue().getValue().equals("(") || lastToken.getValue().getValue().equals(",") || lastToken.getType() == TokenType.OPERATION) {
                         // Try finding a unary operation with given symbol
                         Operation foundOperation = operations.find(Character.toString(curr), true);
                         if (foundOperation != null) {
@@ -159,7 +164,6 @@ public class Tokenizer {
                         }
                     }
                     else {
-                        System.out.println(expression.substring(pos, pos + 4));
                         // Cell references include singular cells (e.g. B2) and cell ranges (e.g. C2:D3)
 
                         // Parse singular cell of expression (left part)
@@ -244,6 +248,13 @@ public class Tokenizer {
 
             else if (curr == '"') {
                 tokens.add(new Token(new DTypeString("\""), "", TokenType.QUOTATION_MARK));
+                // checkBuffers();
+                pos++;
+
+                String stringConstant = parseStringConstant(expression, characterBuffer);
+                tokens.add(new Token(new DTypeString(stringConstant), "", TokenType.STRING));
+
+                tokens.add(new Token(new DTypeString("\""), "", TokenType.QUOTATION_MARK));
                 pos++;
             }
 
@@ -265,6 +276,16 @@ public class Tokenizer {
         expression = expression.replaceAll("\n", "");
 
         return expression;
+    }
+
+    /**
+     * Skips whitespace characters.
+     * @param expression Expression currently being parsed.
+     */
+    public void skipWS(String expression) {
+        while (pos < expression.length() && Character.isWhitespace(expression.charAt(pos))) {
+            pos++;
+        }
     }
 
     private String checkForBooleanValue(String expression) {
@@ -365,6 +386,22 @@ public class Tokenizer {
             // Return complete representation of integer number
             return integerPart;
         }
+    }
+
+    public String parseStringConstant(String expression, ArrayList<Character> buffer) throws Exception {
+        while (pos < expression.length() && expression.charAt(pos) != '"') {
+            buffer.add(expression.charAt(pos));
+            pos++;
+        }
+
+        if (pos == expression.length() || (pos < expression.length() && expression.charAt(pos) != '"')) {
+            throw new Exception("Invalid expression. Expected a closing \"");
+        }
+
+        String result = bufferToString(buffer);
+        buffer.clear();
+
+        return result;
     }
 
     /**
