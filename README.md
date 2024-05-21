@@ -4,12 +4,21 @@ Test task project created for the purposes of application to <b> JetBrains Inter
 Date of creation: <b>May, 2024</b>. <br/>
 For original version (without early development of type support), consider checking out: <a href="https://github.com/LukaNedimovic/table_editor/tree/1fc7ecbd9728186ef982727d89a55e16369a7b87">Double-only version</a>.
 
+<h2> 🚀 Quick Start </h2>
+<b>Table Editor</b> can be compiled and ran using provided <b>gradlew</b>:
+<pre>
+<code>git clone https://github.com/LukaNedimovic/table_editor.git
+cd table_editor
+./gradlew compileJava run</code>
+</pre>
+
 <h2> 🛠️ Basic Features </h2>
 <ol>
   <li> <b><code>Constant values</code> </b> 
     <ol>
       <li> <b> <code>Numerical values</code> </b> - e.g. <code>2.5</code>, <code>0.09</code>, <code>3.14</code> </li>
-      <li> <b> <code>String values</code> </b> - e.g. <code>"apple" (apple)</code>, <code>"thisisnotafunction"</code>. Whitespace support in String values to be added.</li>
+      <li> <b> <code>String values</code> </b> - e.g. <code>"apple" (apple)</code>, <code>"this is not a function"</code>.</li>
+      <li> <b> <code>Boolean values</code> </b> -  i.e. <code>True</code> and <code>False</code>.</li>
     </ol>
     
   <li> <b> <code>Cell References</code> </b> - e.g. <code>B2</code>; cell ranges (e.g. <code>B2:D4</code>) are not supported yet as functional, but their recognition in parsing is and can be easily implemented. </li>
@@ -39,14 +48,6 @@ Even though it is a small project, there are some cool features, such as:
   <li> <b><code>Scalability</code></b> - Table Editor provides scalable code that can generalize onto various datatypes within the table. Exemplary functions are oriented towards <i>Double</i> data type (i.e. <i>DTypeDouble</i>), however one can add various functions and even extend singular function to be capable of accepting different kinds of operators and return different types. </li>
   <li> <b><code>Event handlers</code></b> - One-click row and column selection can be scaled into something greater. </li>
 </ul>
-
-<h2> 🚀 Quick Start </h2>
-<b>Table Editor</b> can be compiled and ran using <b>gradle</b>:
-<pre>
-<code>git clone https://github.com/LukaNedimovic/table_editor.git
-cd table_editor
-./gradlew compileJava run</code>
-</pre>
 
 <h2>💡 Examples </h2>
 <table>
@@ -89,9 +90,14 @@ cd table_editor
 <tr>
   <td> <code>=ifeq(2 < 10, 1.0)</code> </td>
   <td> <code>False</code> </td>
-  <td> <code>2 < 10</code> evaluates to <code>True</code>, which can't be compared with DTypeDouble value of <code>1.0</code>. One can add across types!</td>
+  <td> <code>2 < 10</code> evaluates to <code>True</code>, which can't be compared with DTypeDouble value of <code>1.0</code>.</td>
 </tr>
 
+<tr>
+  <td> <code>=("abc" < "dddd") + 10</code> </td>
+  <td> <code>11</code> </td>
+  <td> <code>("abc" < "dddd")</code> evaluates to <code>True</code>, which can be added to the DTypeInteger value of <code>10</code> to get <code>11</code>!</td>
+</tr>
 
 <tr>
   <td> <code>=ifeq("w" * 3 + "123", "www123") * 5</code></td>
@@ -106,6 +112,16 @@ cd table_editor
 </pre>
   </td>
 </tr>
-
-
 </table>
+
+<h2> 🔥 Latest Modifications </h2>
+<b>Tests</b> have been added for operations (type-wise combinations), functions, and general expressions! Make sure to check them out:
+<pre><code>gradle test</code></pre>
+<b>Table Editor</b> now supports <code>DTypeString</code> - used for manipulation of String literals!
+<b>Table Editor</b> now supports <code>DTypeBoolean</code> - used for manipulation of Boolean values (<code>True</code> / <code>False</code>)! 
+
+<h2> 📅 TODO </h2>
+<ul>
+  <li> <code><b> Strongly typed functions </b> </code> - Functions, as of now, convert certain types among each other. They should not do that - strongly typed function parameters need to be easily implementable </li>
+  <li> <code><b> List DType </b></code> - Type that contains list of some type. It would be useful for functions with unfixed number of arguments. </li>
+</ul>
