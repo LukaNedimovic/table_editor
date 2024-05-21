@@ -120,12 +120,17 @@ Even though it is a small project, there are some cool features, such as:
 <h2 id="latest-modifications"> 🔥 Latest Modifications </h2>
 <b>Table Editor</b> is now <b>fully typed</b>! Functions accept typed parameters, and don't do conversions (as they did in the past). <br/>
 <b>Tests</b> have been added for operations (type-wise combinations), functions, and general expressions! Make sure to check them out:
-<pre><code>gradle test</code></pre>
+<pre><code>./gradlew test</code></pre>
 <b>Table Editor</b> now supports <code>DTypeString</code> - used for manipulation of String literals! <br/>
 <b>Table Editor</b> now supports <code>DTypeBoolean</code> - used for manipulation of Boolean values (<code>True</code> / <code>False</code>)! 
 
 <h2> 📅 TODO </h2>
 <ul>
+<<<<<<< HEAD
   <li> ✅ <code><b> Strongly typed functions</b></code> - Functions, as of now, convert certain types among each other. They should not do that - strongly typed function parameters need to be easily implementable </li>
   <li> ⌛ <code><b> List DType</b></code> - Type that contains list of some type. It would be useful for functions with unfixed number of arguments. </li>
+=======
+  <li><code><b>Strongly typed functions</b></code> - Functions, as of now, convert certain types among each other. Support for strongly typed functions would be very much appreciated. </li>
+  <li><code><b>List DType</b></code> - Type that contains list of some type. It would be useful for functions with unfixed number of arguments. </li>
+>>>>>>> origin
 </ul>
