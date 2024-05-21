@@ -122,6 +122,6 @@ Even though it is a small project, there are some cool features, such as:
 
 <h2> 📅 TODO </h2>
 <ul>
-  <li><code><b>Strongly typed functions</b></code> - Functions, as of now, convert certain types among each other. They should not do that - strongly typed function parameters need to be easily implementable </li>
+  <li><code><b>Strongly typed functions</b></code> - Functions, as of now, convert certain types among each other. Support for strongly typed functions would be very much appreciated. </li>
   <li><code><b>List DType</b></code> - Type that contains list of some type. It would be useful for functions with unfixed number of arguments. </li>
 </ul>
