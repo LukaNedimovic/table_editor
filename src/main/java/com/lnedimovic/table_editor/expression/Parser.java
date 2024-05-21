@@ -163,8 +163,9 @@ public class Parser {
 
                     // Skip the ")" token
                     tokensIdx++;
-                } else {
-                    throw new Exception("Expected value.");
+                }
+                else {
+                    throw new Exception("Expected a value, found: " + value);
                 }
 
                 break;
@@ -198,26 +199,6 @@ public class Parser {
             case FUNCTION: {
                 // Get the function inside the token and the arity of it.
                 Function function = (Function) (token.getRelated());
-                int arity = function.getArity();
-
-                // Handle a special case - a function that takes no parameters (arity = 0)
-                if (arity == 0) {
-                    // Make sure that there are enough tokens so "(" and ")" can appear, then test for their existence
-                    if (tokensIdx >= tokens.length - 1 ||
-                            !tokens[tokensIdx + 1].getValue().getValue().equals("(") ||
-                            !tokens[tokensIdx + 2].getValue().getValue().equals(")")) {
-                        throw new Exception("Invalid function without parameters.");
-                    }
-
-                    tokensIdx += 3; // Advance past the ")" token
-
-                    // Create the node by storing the corresponding function, and passing no other nodes
-                    left = new FunctionNode((Function) token.getRelated(), new Node[0]);
-
-                    break;
-                }
-
-                // Handle a function that has at least 1 parameter
 
                 // Test for the existence of "(" for function parameters
                 token = tokens[++tokensIdx];
@@ -225,9 +206,16 @@ public class Parser {
                     throw new Exception("Invalid expression. Expected a '(', found: " + token);
                 }
 
-                // `arity` number of parameters is expected, therefore the array of fixed size is created
-                Node[] parameters = new Node[arity];
-                int parametersIdx = 0; // Index of the free location to store the argument
+                // Check for nullary functions:
+                if (tokensIdx < tokens.length - 1 && tokens[tokensIdx + 1].getValue().getValue().equals(")")) {
+                    left = new FunctionNode(function, new Node[0]);
+                    tokensIdx += 2; // Skip the ")"
+
+                    break;
+                }
+
+                // Function has arguments.
+                ArrayList<Node> arguments = new ArrayList<>();
 
                 // Parse until ")" is encountered (end of function)
                 while (!tokens[tokensIdx].getValue().getValue().equals(")")) {
@@ -235,25 +223,18 @@ public class Parser {
 
                     // Parameters must be separated by commas, or if there are no more, ")" is expected
                     if (tokens[tokensIdx].getType() != TokenType.COMMA &&
-                            !tokens[tokensIdx].getValue().getValue().equals(")")) {
+                        !tokens[tokensIdx].getValue().getValue().equals(")")) {
                         throw new Exception("Invalid expression. Expected comma.");
                     }
-                    // Parameter overflow (index out of bounds)
-                    if (parametersIdx == arity) {
-                        throw new Exception("Invalid expression. Too many parameters (>=" + parametersIdx + ")");
-                    }
 
-                    // Store the parameter
-                    parameters[parametersIdx++] = parameter;
+                    arguments.add(parameter);
                 }
 
-                // `parametersIdx` reaches the size of the array because of increment, if everything is alright
-                if (parametersIdx != arity) {
-                    throw new Exception("Invalid expression. Not enough parameters");
-                }
+                Node[] argumentsArray = new Node[arguments.size()];
+                argumentsArray = arguments.toArray(argumentsArray);
 
                 // Create a node with corresponding function and all the parameters as separate nodes
-                left = new FunctionNode(function, parameters);
+                left = new FunctionNode(function, argumentsArray);
                 tokensIdx++;
 
                 break;

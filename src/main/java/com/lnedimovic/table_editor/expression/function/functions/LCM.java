@@ -16,42 +16,20 @@ public class LCM extends Function {
      * @throws Exception  In case of invalid number of parameters.
      */
     public LCM(String id) throws Exception {
-        super(id, DTypeInteger.class, DTypeInteger.class, DTypeInteger.class);
+        super(id);
     }
 
-    /**
-     * Performs standard mathematical exponentiation.
-     * @param args       Array of objects passed into given function. Its length must be equal to 2.
-     * @return           Lowest common multiple of given arguments.
-     * @throws Exception In case of invalid number of arguments or invalid values.
-     */
-    @Override
-    public DType<?> evaluate(DType<?>... args) throws Exception {
-        if (args.length != 2) {
-            throw new Exception("LCM(DTypeInteger, DTypeInteger) -> DTypeInteger: Invalid number of arguments");
-        }
-
-        convertToValidDTypes(args);
-
-        DTypeInteger left  = (DTypeInteger) args[0];
-        DTypeInteger right = (DTypeInteger) args[1];
-
+    public DTypeInteger lcm(DTypeInteger left, DTypeInteger right) {
         Integer leftValue  = left.getValue();
         Integer rightValue = right.getValue();
 
-        // LCM(left, right) is calculated as: LCM(left, right) = (left * right) / gcd(left, right)
-        DTypeInteger result = new DTypeInteger((leftValue * rightValue) / gcd(leftValue, rightValue));
+        Integer gcdResult = _gcd(leftValue, rightValue);
+        Integer lcmResult = (leftValue * rightValue) / gcdResult;
 
-        Class<?> returnType = getReturnType();
-        Constructor<?> constructor = returnType.getConstructor(DTypeInteger.class);
-
-        // Create an instance
-        return (DType<?>) constructor.newInstance(result);
+        return new DTypeInteger(lcmResult);
     }
 
-    public Integer gcd(Integer a, Integer b) { return (b == 0) ? a : gcd(b, a%b); }
-
-    public boolean validValue(Object obj) {
-        return true;
+    public Integer _gcd(Integer a, Integer b) {
+        return (b == 0) ? a : _gcd(b, a % b);
     }
 }

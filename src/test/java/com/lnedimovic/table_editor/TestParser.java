@@ -483,46 +483,83 @@ public class TestParser {
         assertEquals(evaluate("=pi()"), new DTypeDouble(Math.PI));
 
         // Abs
-        assertEquals(evaluate("=abs(16)"), new DTypeDouble(16));
-        assertEquals(evaluate("=abs(16)"), evaluate("=abs(-16)"));
+        assertEquals(evaluate("=abs(16.0)"), new DTypeDouble(16));
+        assertEquals(evaluate("=abs(16)"), new DTypeInteger(16));
+        assertEquals(evaluate("=abs(True)"), new DTypeBoolean(true));
+        assertEquals(evaluate("=abs(False)"), new DTypeBoolean(false));
 
         // Sqrt
-        assertEquals(evaluate("=sqrt(64)"), new DTypeDouble(8));
-        assertThrows(Exception.class,                 () -> {evaluate("=sqrt(-16)");});
+        assertEquals(evaluate("=sqrt(16.0)"), new DTypeDouble(4));
+        assertEquals(evaluate("=sqrt(16)"), new DTypeInteger(4));
+        assertEquals(evaluate("=sqrt(True)"), new DTypeBoolean(true));
+        assertEquals(evaluate("=sqrt(False)"), new DTypeBoolean(false));
 
         // Pow
-        assertEquals(evaluate("=pow(2, 3)"),     new DTypeDouble(8));
-        assertEquals(evaluate("=pow(2, True)"),  new DTypeDouble(2));
-        assertEquals(evaluate("=pow(2, False)"), new DTypeDouble(1));
+        assertEquals(evaluate("=pow(2.0, 3.0)"), new DTypeDouble(8));
+        assertEquals(evaluate("=pow(2.0, 3)"), new DTypeDouble(8));
+        assertEquals(evaluate("=pow(2.0, True)"), new DTypeDouble(2));
+        assertEquals(evaluate("=pow(2.0, False)"), new DTypeDouble(1));
+
+        assertEquals(evaluate("=pow(2, 3.0)"), new DTypeDouble(8));
+        assertEquals(evaluate("=pow(2, 3)"), new DTypeInteger(8));
+        assertEquals(evaluate("=pow(2, True)"), new DTypeInteger(2));
+        assertEquals(evaluate("=pow(2, False)"), new DTypeInteger(1));
+
+        assertEquals(evaluate("=pow(True, 3.0)"), new DTypeBoolean(true));
+        assertEquals(evaluate("=pow(False, 3.0)"), new DTypeBoolean(false));
+        assertEquals(evaluate("=pow(True, 2)"), new DTypeBoolean(true));
+        assertEquals(evaluate("=pow(False, 2)"), new DTypeBoolean(false));
+        assertEquals(evaluate("=pow(True, True)"), new DTypeBoolean(true));
+        assertThrows(Exception.class,                     () -> {evaluate("=pow(False, False)");});
+        assertThrows(Exception.class,                     () -> {evaluate("=pow(\"test\", 2)");});
 
         // Min & Max
-        assertEquals(evaluate("=min(2, 3)"),     new DTypeDouble(2));
-        assertEquals(evaluate("=min(2, False)"), new DTypeDouble(0));
-        assertEquals(evaluate("=max(2, 3)"),     new DTypeDouble(3));
-        assertEquals(evaluate("=max(2, False)"), new DTypeDouble(2));
+        assertEquals(evaluate("=min(2.0, 3.0)"),     new DTypeDouble(2));
+        assertEquals(evaluate("=min(2, 3)"), new DTypeInteger(2));
+        assertEquals(evaluate("=min(True, True)"),     new DTypeBoolean(true));
+        assertEquals(evaluate("=min(True, False)"),     new DTypeBoolean(false));
+        assertEquals(evaluate("=min(False, True)"),     new DTypeBoolean(false));
+        assertEquals(evaluate("=min(False, False)"),     new DTypeBoolean(false));;
+        assertThrows(Exception.class,                     () -> {evaluate("=min(2.0, 3)");});
+        assertThrows(Exception.class,                     () -> {evaluate("=min(True, 3)");});
+        assertThrows(Exception.class,                     () -> {evaluate("=min(2.0, False)");});
+
+        assertEquals(evaluate("=max(2.0, 3.0)"),     new DTypeDouble(3));
+        assertEquals(evaluate("=max(2, 3)"), new DTypeInteger(3));
+        assertEquals(evaluate("=max(True, True)"),     new DTypeBoolean(true));
+        assertEquals(evaluate("=max(True, False)"),     new DTypeBoolean(true));
+        assertEquals(evaluate("=max(False, True)"),     new DTypeBoolean(true));
+        assertEquals(evaluate("=max(False, False)"),     new DTypeBoolean(false));;
+        assertThrows(Exception.class,                     () -> {evaluate("=max(2.0, 3)");});
+        assertThrows(Exception.class,                     () -> {evaluate("=max(True, 3)");});
+        assertThrows(Exception.class,                     () -> {evaluate("=max(2.0, False)");});
 
         // GCD & LCM
         assertEquals(evaluate("=gcd(1, 2)"),     new DTypeInteger(1));
-        assertEquals(evaluate("=gcd(2, False)"), new DTypeInteger(2));
         assertEquals(evaluate("=lcm(2, 10)"),    new DTypeInteger(10));
         assertEquals(evaluate("=lcm(-13, 3)"),   new DTypeInteger(39));
+        assertThrows(Exception.class,                     () -> {evaluate("=lcm(10.5, 2)");});
         assertThrows(Exception.class,                     () -> {evaluate("=lcm(\"test\", \"test\")");});
+        assertThrows(Exception.class,                     () -> {evaluate("=lcm(2, False)");});
+        assertThrows(Exception.class,                     () -> {evaluate("=lcm(2, True)");});
+
 
         // IFEQ
         assertEquals(evaluate("=ifeq(3, 3.0)"),             new DTypeBoolean(false));
         assertEquals(evaluate("=ifeq(3, 3)"),               new DTypeBoolean(true));
         assertEquals(evaluate("=ifeq(\"test\", \"test\")"), new DTypeBoolean(true));
         assertEquals(evaluate("=ifeq(\"test\", 3)"),        new DTypeBoolean(false));
+        assertEquals(evaluate("=ifeq(False, 0)"),           new DTypeBoolean(false));
     }
 
     @Test
     public void testGeneral() throws Exception {
-        // Tests that contain cell references were exempt.
+        // Tests that contain cell references are exempt.
 
-        assertEquals(evaluate("=sqrt(abs(-16))"),                            new DTypeDouble(4));
-        assertEquals(evaluate("=pow(max(1++1, ---1000), 3)"),                new DTypeDouble(8));
+        assertEquals(evaluate("=sqrt(abs(-16))"),                            new DTypeInteger(4));
+        assertEquals(evaluate("=pow(max(1++1, ---1000), 3)"),                new DTypeInteger(8));
         assertEquals(evaluate("=5 + e() - pi()^2"),                          new DTypeDouble(-2.1513225726303133));
-        assertEquals(evaluate("=ifeq(pow(5, 2), 25)"),                       new DTypeBoolean(false));
+        assertEquals(evaluate("=ifeq(pow(5, 2), 25)"),                       new DTypeBoolean(true));
         assertEquals(evaluate("=ifeq(2 < 10, 1.0)"),                         new DTypeBoolean(false));
         assertEquals(evaluate("=ifeq(\"w\" * 3 + \"123\", \"www123\") * 5"), new DTypeInteger(5));
     }

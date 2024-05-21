@@ -2,7 +2,10 @@ package com.lnedimovic.table_editor.expression.function;
 
 import com.lnedimovic.table_editor.dtype.DType;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
+
+import static org.junit.internal.MethodSorter.getDeclaredMethods;
 
 /**
  * Abstract class representing a N-ary function.
@@ -43,38 +46,65 @@ public abstract class Function {
     /**
      * Creates an instance of Function, given id and types.
      * @param id         Unique identifier of the function.
-     * @param types      Types used by function. The last type provided is used as return type (it must be provided).
      * @throws Exception In case of invalid number of types.
      */
-    public Function(String id, Class<?>... types) throws Exception {
+    public Function(String id) throws Exception {
         if (!validId(id)) {
             throw new Exception("Invalid function id");
         }
         this.id = id;
-
-        // As of now, functions without parameters are supported. Return type still has to be provided, though.
-        if (types.length < 1) {
-            throw new Exception("Error while creating " + id + ": Number of provided types must be at least 1 (one for output).");
-        }
-
-        this.arity = types.length - 1; // Arity is defined as the number of arguments inside a function
-
-        this.parameterTypes = new Class[arity]; // Up until last element are the input types
-        for (int i = 0; i < arity; i++) {
-            this.parameterTypes[i] = types[i];
-        }
-
-        this.returnType = types[arity]; // Last element of types is the return type
     }
 
     /**
-     * Abstract method, to be overridden by every operation created, that defines how operation should be evaluated.
-     * This is the "core" of functions - it is the place where the developer encodes the logic of each function and makes it scalable and highly flexible.
-     * @param args       Array of objects passed into given function. Its length must be equal to function's arity.
+     * Evaluate function call by finding the appropriately named method inside the child function.
+     * @param args       Array of objects passed into given function.
      * @return           Result of function evaluation.
      * @throws Exception In case of invalid number of arguments or invalid data.
      */
-    public abstract DType<?> evaluate(DType<?>... args) throws Exception;
+    public DType<?> evaluate(DType<?>... args) throws Exception {
+//        convertToValidDTypes(args);
+
+        // Get the argument types provided
+        Class<?>[] argumentTypes = getArgumentTypes(args);
+
+        // Find if method with g
+        Method method;
+        try {
+            method = findMatchingMethod(getId(), argumentTypes);
+        }
+        catch (Exception e) {
+            throw new Exception("Can't find method: " + e.getMessage());
+        }
+
+        System.out.println("Received types" + Arrays.toString(argumentTypes));
+        System.out.println("Method types: " + Arrays.toString(method.getParameterTypes()));
+
+        // If method is found, call it and return.
+        return (DType<?>) method.invoke(this, (Object[]) args);
+    }
+
+    private Method findMatchingMethod(String methodName, Class<?>[] argumentTypes) {
+        for (Method method : getClass().getDeclaredMethods()) {
+            if (method.getName().equals(methodName)) {
+                Class<?>[] parameterTypes = method.getParameterTypes();
+
+                if (parameterTypes.length == argumentTypes.length) {
+                    boolean matches = true;
+                    for (int i = 0; i < parameterTypes.length; i++) {
+                        if (!parameterTypes[i].isAssignableFrom(argumentTypes[i])) {
+                            matches = false;
+                            break;
+                        }
+                    }
+
+                    if (matches) {
+                        return method;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     public boolean validId(String id) {
         boolean validCharacters = true;
@@ -103,6 +133,17 @@ public abstract class Function {
         }
 
         return false;
+    }
+
+    public Class<?>[] getArgumentTypes(DType<?>... args) {
+        int numOfArguments  = args.length;
+
+        Class<?>[] argumentTypes = new Class[numOfArguments];
+        for (int argIdx = 0; argIdx < args.length; argIdx++) {
+            argumentTypes[argIdx] = args[argIdx].getClass();
+        }
+
+        return argumentTypes;
     }
 
     public DType<?> convertToDType(DType<?> obj, Class<?> type) throws Exception {

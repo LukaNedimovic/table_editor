@@ -3,6 +3,9 @@
 Test task project created for the purposes of application to <b> JetBrains Internship ("Low code Table Data preprocessing").</b> <br/>
 Date of creation: <b>May, 2024</b>. <br/>
 For original version (type support, string literals...), consider checking out: <a href="https://github.com/LukaNedimovic/table_editor/tree/1fc7ecbd9728186ef982727d89a55e16369a7b87">Double-only version</a>.
+<br/>
+
+Here for the updates? Check them out: <a id="latest-modifications">🔥 Latest Modifications</a>
 
 <h2> 🚀 Quick Start </h2>
 <b>Table Editor</b> can be compiled and ran using provided <b>gradlew</b>:
@@ -30,7 +33,7 @@ cd table_editor
       <li> <b><code>Binary Operations</code></b> - e.g. <code>+ (addition)</code>, <code>- (subtraction)</code>, <code>* (multiplication)</code>, <code>/ (division)</code>, <code>^ (exponentiation)</code>, <br/> <code>% (modulo)</code>, <code>< (less than)</code>, <code>> (greater than)</code> </li>
     </ol>
   </li>
-  <li> <b><code>Named Functions</code></b> 
+  <li> <b><code>Named (Strongly Typed) Functions</code></b> 
     <ol>
       <li> <b><code>Nullary Functions</code> </b> - e.g. <code>e()</code>, <code>pi()</code> </li>
       <li> <b><code>Unary Functions</code> </b> - e.g. <code>sqrt(x)</code>, <code>abs(x)</code> </li>
@@ -44,7 +47,7 @@ cd table_editor
 Even though it is a small project, there are some cool features, such as:
 <ul>
   <li> <b><code>New operations</code></b> - Table Editor provides you with tokenizer & parser that are not restricted to the aforementioned operations. It is easy to add new operations (both unary and binary), and define their functionality within just a few lines of code. </li>
-  <li> <b><code>New functions</code></b> - Functions are also very simple to add - interface created lets you create functions with any number of arguments, accepting anything as their arguments and having as complex functionality as you wish. </li>
+  <li> <b><code>New (strongly typed) functions</code></b> - Functions are also very simple to add - interface created lets you create functions with any number of arguments, accepting anything as their arguments and having as complex functionality as you wish. </li>
   <li> <b><code>Scalability</code></b> - Table Editor provides scalable code that can generalize onto various datatypes within the table. Exemplary functions are oriented towards <i>Double</i> data type (i.e. <i>DTypeDouble</i>), however one can add various functions and even extend singular function to be capable of accepting different kinds of operators and return different types. </li>
   <li> <b><code>Event handlers</code></b> - One-click row and column selection can be scaled into something greater. </li>
 </ul>
@@ -58,20 +61,20 @@ Even though it is a small project, there are some cool features, such as:
 </tr>
 <tr>
   <td> <code>=sqrt(abs(-16))</code> </td>
-  <td> <code>4.0</code> </td>
+  <td> <code>4</code> </td>
   <td> Function nesting is possible. </td>
 </tr>  
   
 <tr>
   <td> <code>=pow(max(1++1, ---1000), 3)</code> </td>
-  <td> <code>8.0</code> </td>
+  <td> <code>8</code> </td>
   <td> Same unary / binary operations can be concatenated. </td>
 </tr>
 
 <tr>
-  <td> <code>=pow(min(B1^2, abs(-1000)), 3)</code> </td>
+  <td> <code>=pow(min(B1^2, abs(-1000)), 3.0)</code> </td>
   <td> <code>64.0</code> </td>
-  <td> For cell value <code>B1 = 4</code> </td>
+  <td> For cell value <code>B1 = 4</code>. Casting from DTypeInteger to DTypeDouble is implemented.</td>
 </tr>
 
 
@@ -83,8 +86,8 @@ Even though it is a small project, there are some cool features, such as:
 
 <tr>
   <td> <code>=ifeq(pow(5, 2), 25)</code> </td>
-  <td> <code>False</code> </td>
-  <td> <code>pow(5, 2)</code> returns <code>25.0</code>, which is not the same as <code>25</code>.</td>
+  <td> <code>True</code> </td>
+  <td> <code>pow(5, 2)</code> returns <code>25</code>, which is the same as <code>25</code>.</td>
 </tr>
 
 <tr>
@@ -114,7 +117,8 @@ Even though it is a small project, there are some cool features, such as:
 </tr>
 </table>
 
-<h2> 🔥 Latest Modifications </h2>
+<h2 id="latest-modifications"> 🔥 Latest Modifications </h2>
+<b>Table Editor</b> is now <b>fully typed</b>! Functions accept typed parameters, and don't do conversions (as they did in the past). <br/>
 <b>Tests</b> have been added for operations (type-wise combinations), functions, and general expressions! Make sure to check them out:
 <pre><code>gradle test</code></pre>
 <b>Table Editor</b> now supports <code>DTypeString</code> - used for manipulation of String literals! <br/>
@@ -122,6 +126,6 @@ Even though it is a small project, there are some cool features, such as:
 
 <h2> 📅 TODO </h2>
 <ul>
-  <li> <code><b> Strongly typed functions</b></code> - Functions, as of now, convert certain types among each other. They should not do that - strongly typed function parameters need to be easily implementable </li>
-  <li> <code><b> List DType</b></code> - Type that contains list of some type. It would be useful for functions with unfixed number of arguments. </li>
+  <li> ✅ <code><b> Strongly typed functions</b></code> - Functions, as of now, convert certain types among each other. They should not do that - strongly typed function parameters need to be easily implementable </li>
+  <li> ⌛ <code><b> List DType</b></code> - Type that contains list of some type. It would be useful for functions with unfixed number of arguments. </li>
 </ul>
