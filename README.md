@@ -23,7 +23,7 @@ cd table_editor
       <li> <b> <code>String values</code> </b> - e.g. <code>"apple" (apple)</code>, <code>"this is not a function"</code>.</li>
       <li> <b> <code>Boolean values</code> </b> -  i.e. <code>True</code> and <code>False</code>.</li>
     </ol>
-    
+
   <li> <b> <code>Cell References</code> </b> - e.g. <code>B2</code>; cell ranges (e.g. <code>B2:D4</code>) are not supported yet as functional, but their recognition in parsing is and can be easily implemented. </li>
   <li> <b> <code>Precedence</code> </b>     - i.e. every operation and function has defined precedence and it is flexible to change.
   <li> <b> <code>Parentheses</code> </b>     - i.e. <code>(</code> and <code>)</code>, with nesting </li>
@@ -64,7 +64,7 @@ Even though it is a small project, there are some cool features, such as:
   <td> <code>4</code> </td>
   <td> Function nesting is possible. </td>
 </tr>  
-  
+
 <tr>
   <td> <code>=pow(max(1++1, ---1000), 3)</code> </td>
   <td> <code>8</code> </td>
