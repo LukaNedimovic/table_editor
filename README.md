@@ -16,7 +16,15 @@ cd table_editor
 </pre>
 
 <h2> 🛠️ Basic Features </h2>
-<ol>
+<ol start="0">
+  <li><b> <code>Data Types</code> </b>
+  <ol>
+      <li> <b> <code>DTypeDouble</code> </b> </li>
+      <li> <b> <code>DTypeInteger</code> </b> </li>
+      <li> <b> <code>DTypeBoolean</code> </b> </li>
+      <li> <b> <code>DTypeString</code> </b> </li>
+    </ol>
+  </li>
   <li> <b><code>Constant values</code> </b> 
     <ol>
       <li> <b> <code>Numerical values</code> </b> - e.g. <code>2.5</code>, <code>0.09</code>, <code>3.14</code> </li>
