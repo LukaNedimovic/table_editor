@@ -2,7 +2,7 @@
 
 Test task project created for the purposes of application to <b> JetBrains Internship ("Low code Table Data preprocessing").</b> <br/>
 Date of creation: <b>May, 2024</b>. <br/>
-For original version (without early development of type support), consider checking out: <a href="https://github.com/LukaNedimovic/table_editor/tree/1fc7ecbd9728186ef982727d89a55e16369a7b87">Double-only version</a>.
+For original version (type support, string literals...), consider checking out: <a href="https://github.com/LukaNedimovic/table_editor/tree/1fc7ecbd9728186ef982727d89a55e16369a7b87">Double-only version</a>.
 
 <h2> 🚀 Quick Start </h2>
 <b>Table Editor</b> can be compiled and ran using provided <b>gradlew</b>:
