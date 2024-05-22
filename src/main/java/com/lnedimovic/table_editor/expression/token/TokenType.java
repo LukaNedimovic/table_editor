@@ -28,6 +28,11 @@ public enum TokenType {
     PARENTHESIS,
 
     /**
+     * Standard bracket, i.e. "[" or a "]" character
+     */
+    BRACKET,
+
+    /**
      * Standard comma, i.e. "," character.
      */
     COMMA,

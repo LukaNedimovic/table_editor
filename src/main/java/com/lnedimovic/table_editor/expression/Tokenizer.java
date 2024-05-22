@@ -231,13 +231,13 @@ public class Tokenizer {
             }
 
             // Everything else is directly stored
-            else if (curr == '(') {
-                tokens.add(new Token(new DTypeString("("), "", TokenType.PARENTHESIS));
+            else if (curr == '(' || curr == ')') {
+                tokens.add(new Token(new DTypeString(String.valueOf(curr)), "", TokenType.PARENTHESIS));
                 pos++;
             }
 
-            else if (curr == ')') {
-                tokens.add(new Token(new DTypeString(")"), "", TokenType.PARENTHESIS));
+            else if (curr == '[' || curr == ']') {
+                tokens.add(new Token(new DTypeString(String.valueOf(curr)), "", TokenType.BRACKET));
                 pos++;
             }
 

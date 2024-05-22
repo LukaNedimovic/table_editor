@@ -1,6 +1,7 @@
 package com.lnedimovic.table_editor.expression.function;
 
 import com.lnedimovic.table_editor.dtype.DType;
+import com.lnedimovic.table_editor.dtype.dtypes.DTypeArray;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -43,6 +44,8 @@ public abstract class Function {
      */
     private Class<?>   returnType;
 
+    private boolean turnArgsToArrayBeforeCall = false;
+
     /**
      * Creates an instance of Function, given id and types.
      * @param id         Unique identifier of the function.
@@ -54,6 +57,19 @@ public abstract class Function {
         }
         this.id = id;
     }
+    /**
+     * Creates an instance of Function, given id and types.
+     * @param id                       Unique identifier of the function.
+     * @param turnArgsToListBeforeCall Whether to turn arguments into a list before function call.
+     * @throws Exception               In case of invalid number of types.
+     */
+    public Function(String id, boolean turnArgsToListBeforeCall) throws Exception {
+        if (!validId(id)) {
+            throw new Exception("Invalid function id");
+        }
+        this.id = id;
+        this.turnArgsToArrayBeforeCall = turnArgsToListBeforeCall;
+    }
 
     /**
      * Evaluate function call by finding the appropriately named method inside the child function.
@@ -62,7 +78,22 @@ public abstract class Function {
      * @throws Exception In case of invalid number of arguments or invalid data.
      */
     public DType<?> evaluate(DType<?>... args) throws Exception {
-//        convertToValidDTypes(args);
+        // As of now, functions can use 2D arrays for their tasks.
+        // This, rather ugly, patch of code transforms it into the correct shape.
+        if (turnArgsToArrayBeforeCall) {
+            if (args.length == 1 && args[0] instanceof DTypeArray) {
+                if (((DTypeArray) args[0]).get(0) instanceof DTypeArray) {
+                    // Correct shape
+                }
+                else {
+                    args = new DType[]{args[0]};
+                }
+            }
+            else {
+                DTypeArray temp = new DTypeArray(new DTypeArray(args));
+                args = new DType[]{temp};
+            }
+        }
 
         // Get the argument types provided
         Class<?>[] argumentTypes = getArgumentTypes(args);
@@ -75,9 +106,6 @@ public abstract class Function {
         catch (Exception e) {
             throw new Exception("Can't find method: " + e.getMessage());
         }
-
-        System.out.println("Received types" + Arrays.toString(argumentTypes));
-        System.out.println("Method types: " + Arrays.toString(method.getParameterTypes()));
 
         // If method is found, call it and return.
         return (DType<?>) method.invoke(this, (Object[]) args);
@@ -186,5 +214,11 @@ public abstract class Function {
     }
     public void setPrecedence(int precedence) {
         this.precedence = precedence;
+    }
+    public boolean isTurnArgsToArrayBeforeCall() {
+        return turnArgsToArrayBeforeCall;
+    }
+    public void setTurnArgsToArrayBeforeCall(boolean turnArgsToListBeforeCall) {
+        this.turnArgsToArrayBeforeCall = turnArgsToListBeforeCall;
     }
 }

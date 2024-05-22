@@ -2,6 +2,7 @@ package com.lnedimovic.table_editor.expression.ast;
 
 import com.lnedimovic.table_editor.dtype.DType;
 import com.lnedimovic.table_editor.dtype.DTypeFactory;
+import com.lnedimovic.table_editor.dtype.dtypes.DTypeArray;
 import com.lnedimovic.table_editor.expression.ast.node.Node;
 import com.lnedimovic.table_editor.expression.ast.node.nodes.ReferenceNode;
 import com.lnedimovic.table_editor.expression.operation.OperationSet;
@@ -69,7 +70,6 @@ public class ASTree {
 
     /**
      * Return value from specific cell.
-     *
      * @param range      String representing the cell range. As of now, only singular cells are supported.
      * @param model      <code>TableModel</code> to fetch data from.
      * @return           Cell value.
@@ -79,16 +79,43 @@ public class ASTree {
         String leftCell  = range.substring(0, range.indexOf(":"));
         String rightCell = range.substring(range.indexOf(":") + 1);
 
-        // TODO: Range support
-        if (!leftCell.equals(rightCell)) {
-            throw new Exception("Cell range support to be added.");
-        }
+//        if (!leftCell.equals(rightCell)) {
+//            throw new Exception("Cell range support to be added.");
+//        }
 
         // Internally, 0-column is reserved for row indexing, while the row 0 is standard
-        int col = leftCell.charAt(0) - 'A' + 1;
-        int row = Integer.parseInt(leftCell.substring(1)) - 1;
+        int leftCol = leftCell.charAt(0) - 'A' + 1;
+        int leftRow = Integer.parseInt(leftCell.substring(1)) - 1;
 
-        return (DType<?>) model.getValueAt(row, col);
+        int rightCol = rightCell.charAt(0) - 'A' + 1;
+        int rightRow = Integer.parseInt(rightCell.substring(1)) - 1;
+
+        // Single-cell reference
+        if (leftCol == rightCol && leftRow == rightRow) {
+            return (DType<?>) model.getValueAt(leftRow, leftCol);
+        }
+
+        int totalRows = rightRow - leftRow + 1;
+        int totalCols = rightCol - leftCol + 1;
+
+        DTypeArray fetchedRange = new DTypeArray(totalRows);
+
+        int rowIdx = 0;
+        for (int row = leftRow; row <= rightRow; row++) {
+            DTypeArray rowArray = new DTypeArray(totalCols);
+            int colIdx = 0;
+            for (int col = leftCol; col <= rightCol; col++) {
+                DType<?> rowColValue = (DType<?>) model.getValueAt(row, col);
+                rowArray.set(colIdx, rowColValue);
+                colIdx++;
+
+            }
+
+            fetchedRange.set(rowIdx, rowArray);
+            rowIdx++;
+        }
+
+        return fetchedRange;
     }
 
     /**

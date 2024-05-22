@@ -171,6 +171,10 @@ public class Parser {
                 break;
             }
 
+            case BRACKET: {
+                throw new Exception("Brackets are not yet fully implemented.");
+            }
+
             case OPERATION: {
                 // Must be a unary operation. Binary operations are parsed separately below.
 

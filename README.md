@@ -23,17 +23,18 @@ cd table_editor
       <li> <b> <code>DTypeInteger</code> </b> </li>
       <li> <b> <code>DTypeBoolean</code> </b> </li>
       <li> <b> <code>DTypeString</code> </b> </li>
+      <li> <b> <code>DTypeArray</code> </b> </li>
     </ol>
   </li>
   <li> <b><code>Constant values</code> </b> 
     <ol>
       <li> <b> <code>Numerical values</code> </b> - e.g. <code>2.5</code>, <code>0.09</code>, <code>3.14</code> </li>
-      <li> <b> <code>String values</code> </b> - e.g. <code>"apple" (apple)</code>, <code>"this is not a function"</code>.</li>
+      <li> <b> <code>String values</code> </b> - e.g. <code>"apple"</code>, <code>"this is not a function"</code>.</li>
       <li> <b> <code>Boolean values</code> </b> -  i.e. <code>True</code> and <code>False</code>.</li>
     </ol>
 
-  <li> <b> <code>Cell References</code> </b> - e.g. <code>B2</code>; cell ranges (e.g. <code>B2:D4</code>) are not supported yet as functional, but their recognition in parsing is and can be easily implemented. </li>
-  <li> <b> <code>Precedence</code> </b>     - i.e. every operation and function has defined precedence and it is flexible to change.
+  <li> <b> <code>Cell References</code> </b> - e.g. <code>B2</code>, <code>B2:D4</code></li>
+  <li> <b> <code>Precedence</code> </b>      - i.e. every operation and function has defined precedence and it is flexible to change.
   <li> <b> <code>Parentheses</code> </b>     - i.e. <code>(</code> and <code>)</code>, with nesting </li>
   <li> <b> <code>Operations</code> </b> 
     <ol>
@@ -123,9 +124,45 @@ Even though it is a small project, there are some cool features, such as:
 </pre>
   </td>
 </tr>
+
+<tr>
+  <td> <code>=sum(1, 2, 3, 4)</code> </td>
+  <td> <code>10</code> </td>
+  <td> Functions with variable length of arguments are supported!</td>
+</tr>
+
+<tr>
+  <td> <code>=average(A1:B2)</code> </td>
+  <td> <code>2.5</code> </td>
+  <td> 
+    For table:
+    <table style="text-align: center">
+        <tr>
+          <td> </td>
+          <td><code>A</code></td>
+          <td><code>B</code></td>
+        </tr>
+        <tr>
+          <td><code>1</code></td>
+          <td>1</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td><code>2</code></td>
+          <td>3</td>
+          <td>4</td>
+        </tr>
+    </table>
+    <code>A1:B2</code> returns a <code>DTypeArray([[1, 2], [3, 4]])</code>, which is then evaluated to get the result <code>DTypeDouble(2.5)</code>
+  </td>
+</tr>
+
+
 </table>
 
 <h2 id="latest-modifications"> 🔥 Latest Modifications </h2>
+<b>Table Editor</b> now supports <b>Cell Range References</b>! <br/>
+<b>Table Editor</b> now supports <code>DTypeArray</code> - used for manipulation of <code>DType</code> data stored within a multi-dimensional array.<br/>
 <b>Table Editor</b> is now <b>fully typed</b>! Functions accept typed parameters, and don't do conversions (as they did in the past). <br/>
 <b>Tests</b> have been added for operations (type-wise combinations), functions, and general expressions! Make sure to check them out:
 <pre><code>./gradlew test</code></pre>
@@ -134,6 +171,8 @@ Even though it is a small project, there are some cool features, such as:
 
 <h2> 📅 TODO </h2>
 <ul>
+  <li> ⌛ <code>Array parsing</code> - Current code can produce and use <code>DTypeArray</code> data, but can't parse user-entered arrays.</li>
+  <li> ⌛ <code>Documentation / Comments</code> - Code is clean by itself, but a few <b>doccument comments</b> can't hurt.</li>
   <li> ✅ <code><b>Strongly typed functions</b></code> - Functions, as of now, convert certain types among each other. They should not do that - strongly typed function parameters need to be easily <implementable class=""></implementable> </li>
-  <li> ⌛ <code><b>List DType</b></code> - Type that contains list of some type. It would be useful for functions with unfixed number of arguments. </li>
+  <li> ✅ <code><b>List DType</b></code> - Type that contains list of some type. It would be useful for functions with unfixed number of arguments. </li>
 </ul>

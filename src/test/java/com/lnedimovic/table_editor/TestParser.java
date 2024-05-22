@@ -51,27 +51,30 @@ public class TestParser {
 
         try {
             // Functions without arguments - can be useful for constants!
-            Function e    = new ConstE("e");
-            Function pi   = new ConstPI("pi");
+            Function e = new ConstE("e");
+            Function pi = new ConstPI("pi");
 
             // Unary functions
-            Function abs  = new Abs("abs");
+            Function abs = new Abs("abs");
             Function sqrt = new Sqrt("sqrt");
 
             // Binary functions
-            Function pow  = new Pow("pow");
-            Function gcd  = new GCD("gcd");
-            Function lcm  = new LCM("lcm");
+            Function pow = new Pow("pow");
+            Function gcd = new GCD("gcd");
+            Function lcm = new LCM("lcm");
 
-            Function min  = new Min("min");
-            Function max  = new Max("max");
+            Function min = new Min("min");
+            Function max = new Max("max");
 
             // Conditional functions also exist
             Function ifeq = new IFEQ("ifeq");
 
-            functions = new Function[]{e, pi, abs, sqrt, pow, gcd, lcm, min, max, ifeq};
-        }
-        catch (Exception e) {
+            // Arbitrary number of parameter functions
+            Function sum = new Sum("sum");
+            Function average = new Average("average");
+
+            functions = new Function[]{e, pi, abs, sqrt, pow, gcd, lcm, min, max, ifeq, sum, average};
+        } catch (Exception e) {
             System.out.println("Error while setting up operations: " + e.getMessage());
         }
 
@@ -550,6 +553,16 @@ public class TestParser {
         assertEquals(evaluate("=ifeq(\"test\", \"test\")"), new DTypeBoolean(true));
         assertEquals(evaluate("=ifeq(\"test\", 3)"),        new DTypeBoolean(false));
         assertEquals(evaluate("=ifeq(False, 0)"),           new DTypeBoolean(false));
+
+        // Sum
+        assertEquals(evaluate("=sum(1, 2, 3, 4)"),   new DTypeInteger(10));
+        assertEquals(evaluate("=sum(1, 2, 3.0, 4)"), new DTypeDouble(10));
+        assertThrows(Exception.class,                          () -> {evaluate("=sum(1, \"test\", 3)");});
+
+        // Average
+        assertEquals(evaluate("=average(1, 2, 3)"), new DTypeDouble(2.0));
+        assertEquals(evaluate("=average(1)"),       new DTypeDouble(1.0));
+        assertThrows(Exception.class,                         () -> {evaluate("=sum(1, \"test\", 3)");});
     }
 
     @Test
@@ -562,5 +575,6 @@ public class TestParser {
         assertEquals(evaluate("=ifeq(pow(5, 2), 25)"),                       new DTypeBoolean(true));
         assertEquals(evaluate("=ifeq(2 < 10, 1.0)"),                         new DTypeBoolean(false));
         assertEquals(evaluate("=ifeq(\"w\" * 3 + \"123\", \"www123\") * 5"), new DTypeInteger(5));
+        assertEquals(evaluate("=sum(1, 2, 3, 4)"),                           new DTypeInteger(10));
     }
 }
