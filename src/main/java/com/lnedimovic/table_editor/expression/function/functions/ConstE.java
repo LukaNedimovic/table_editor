@@ -19,6 +19,9 @@ public class ConstE extends Function {
         super(id);
     }
 
+    /**
+     * @return Math.E = 2.718281828459045
+     */
     public DTypeDouble e() {
         return new DTypeDouble(Math.E);
     }

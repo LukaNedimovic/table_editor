@@ -1,6 +1,5 @@
 package com.lnedimovic.table_editor.expression.function.functions;
 
-import com.lnedimovic.table_editor.dtype.DType;
 import com.lnedimovic.table_editor.dtype.dtypes.DTypeDouble;
 import com.lnedimovic.table_editor.expression.function.Function;
 
@@ -19,6 +18,9 @@ public class ConstPI extends Function {
         super(id);
     }
 
+    /**
+     * @return Math.PI = 3.141592653589793
+     */
     public DTypeDouble pi() {
         return new DTypeDouble(Math.PI);
     }

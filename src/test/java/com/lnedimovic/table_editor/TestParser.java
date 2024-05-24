@@ -1,10 +1,7 @@
 package com.lnedimovic.table_editor;
 
 import com.lnedimovic.table_editor.dtype.DType;
-import com.lnedimovic.table_editor.dtype.dtypes.DTypeBoolean;
-import com.lnedimovic.table_editor.dtype.dtypes.DTypeDouble;
-import com.lnedimovic.table_editor.dtype.dtypes.DTypeInteger;
-import com.lnedimovic.table_editor.dtype.dtypes.DTypeString;
+import com.lnedimovic.table_editor.dtype.dtypes.*;
 import com.lnedimovic.table_editor.expression.Parser;
 import com.lnedimovic.table_editor.expression.Tokenizer;
 import com.lnedimovic.table_editor.expression.ast.ASTree;
@@ -555,14 +552,14 @@ public class TestParser {
         assertEquals(evaluate("=ifeq(False, 0)"),           new DTypeBoolean(false));
 
         // Sum
-        assertEquals(evaluate("=sum(1, 2, 3, 4)"),   new DTypeInteger(10));
-        assertEquals(evaluate("=sum(1, 2, 3.0, 4)"), new DTypeDouble(10));
-        assertThrows(Exception.class,                          () -> {evaluate("=sum(1, \"test\", 3)");});
+        assertEquals(evaluate("=sum([1, 2, 3, 4])"),   new DTypeInteger(10));
+        assertEquals(evaluate("=sum([1, 2, 3.0, 4])"), new DTypeDouble(10));
+        assertThrows(Exception.class,                           () -> {evaluate("=sum(1, \"test\", 3)");});
 
         // Average
-        assertEquals(evaluate("=average(1, 2, 3)"), new DTypeDouble(2.0));
-        assertEquals(evaluate("=average(1)"),       new DTypeDouble(1.0));
-        assertThrows(Exception.class,                         () -> {evaluate("=sum(1, \"test\", 3)");});
+        assertEquals(evaluate("=average([1, 2, 3])"), new DTypeDouble(2.0));
+        assertEquals(evaluate("=average([1])"),       new DTypeDouble(1.0));
+        assertThrows(Exception.class,                          () -> {evaluate("=sum(1, \"test\", 3)");});
     }
 
     @Test
@@ -575,6 +572,6 @@ public class TestParser {
         assertEquals(evaluate("=ifeq(pow(5, 2), 25)"),                       new DTypeBoolean(true));
         assertEquals(evaluate("=ifeq(2 < 10, 1.0)"),                         new DTypeBoolean(false));
         assertEquals(evaluate("=ifeq(\"w\" * 3 + \"123\", \"www123\") * 5"), new DTypeInteger(5));
-        assertEquals(evaluate("=sum(1, 2, 3, 4)"),                           new DTypeInteger(10));
+        assertEquals(evaluate("=sum([1, 2, 3, 4])"),                         new DTypeInteger(10));
     }
 }

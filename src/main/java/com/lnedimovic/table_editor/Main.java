@@ -160,13 +160,12 @@ public class Main {
             Function gcd     = new GCD("gcd");
             Function lcm     = new LCM("lcm");
 
-            Function min     = new Min("min");
-            Function max     = new Max("max");
-
             // Conditional functions also exist
             Function ifeq    = new IFEQ("ifeq");
 
             // Arbitrary number of parameter functions
+            Function min     = new Min("min");
+            Function max     = new Max("max");
             Function sum     = new Sum("sum");
             Function average = new Average("average");
 

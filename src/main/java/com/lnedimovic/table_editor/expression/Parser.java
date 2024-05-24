@@ -1,6 +1,7 @@
 package com.lnedimovic.table_editor.expression;
 
 // Operation and Function
+import com.lnedimovic.table_editor.dtype.dtypes.DTypeArray;
 import com.lnedimovic.table_editor.dtype.dtypes.DTypeBoolean;
 import com.lnedimovic.table_editor.dtype.dtypes.DTypeString;
 import com.lnedimovic.table_editor.expression.operation.Operation;
@@ -172,7 +173,43 @@ public class Parser {
             }
 
             case BRACKET: {
-                throw new Exception("Brackets are not yet fully implemented.");
+                // Closed bracket is always parsed after opened one. See code below.
+                if (token.getValue().getValue().equals("]")) {
+                    throw new Exception("Invalid expression. Did not expect a ']'");
+                }
+
+                // Check for empty arrays:
+                if (tokensIdx < tokens.length - 1 && tokens[tokensIdx + 1].getValue().getValue().equals(")")) {
+                    left = new ConstantNode(new DTypeArray(0));
+                    tokensIdx += 2; // Skip the ")"
+
+                    break;
+                }
+
+                // Array has at least one element
+                ArrayList<Node> elements = new ArrayList<>();
+
+                // Parse until "]" is encountered (end of function)
+                while (!tokens[tokensIdx].getValue().getValue().equals("]")) {
+                    Node element = parse(0); // Parse the element
+
+                    // Elements must be separated by commas, or if there are no more, "]" is expected
+                    if (tokens[tokensIdx].getType() != TokenType.COMMA &&
+                        !tokens[tokensIdx].getValue().getValue().equals("]")) {
+                        throw new Exception("Invalid expression. Expected comma.");
+                    }
+
+                    elements.add(element);
+                }
+
+                Node[] elementsArray = new Node[elements.size()];
+                elementsArray = elements.toArray(elementsArray);
+
+                // Create a node with a complete array
+                left = new ArrayNode(elementsArray);
+                tokensIdx++;
+
+                break;
             }
 
             case OPERATION: {

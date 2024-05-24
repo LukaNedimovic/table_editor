@@ -4,6 +4,9 @@ import com.lnedimovic.table_editor.dtype.DType;
 
 import java.util.Arrays;
 
+/**
+ * DTypeArray is a wrapper function that should be used to store DType values inside table and in other calculationos.
+ */
 public class DTypeArray implements DType<DType<?>[]> {
     DType<?>[] value;
 
@@ -25,8 +28,41 @@ public class DTypeArray implements DType<DType<?>[]> {
         return this.getValue().length;
     }
 
+    public Integer totalDimensions() {
+        for (int idx = 0 ; idx < value.length ; idx++) {
+            if (value[idx] instanceof DTypeArray) {
+                return 1 + ((DTypeArray) value[idx]).totalDimensions();
+            }
+        }
+
+        return 1;
+    }
+
+    /**
+     * @return           2-dimensional array.
+     * @throws Exception In case of array of higher dimension than 2 provided.
+     */
+    public DTypeArray toTwoDimensional() throws Exception {
+        if (totalDimensions() > 2) {
+            throw new Exception("Array of higher dimension than 2 provided.");
+        }
+
+        // If dimension of the provided array is 1, upscale it
+        if (totalDimensions() == 1) {
+            return new DTypeArray(this);
+        }
+        // Otherwise, it is already a 2D array, so just return it
+        else {
+            return this;
+        }
+    }
+
+    /**
+     * @return True if objects within the DTYpeArray are all the same class; false, otherwise.
+     */
     public boolean isClassUniform() {
         for (int idx = 0; idx < value.length - 1; idx++) {
+            // Check if the class is same for two neighboring elements
             if (value[idx].getClass() != value[idx + 1].getClass()) {
                 return false;
             }
@@ -35,8 +71,14 @@ public class DTypeArray implements DType<DType<?>[]> {
         return true;
     }
 
+    /**
+     * Function that checks whether the provided DTypeArray contains instance of given DType class
+     * @param dtype Class function is checking for
+     * @return      True if the given class is found; false, otherwise.
+     */
     public boolean containsDType(Class<?> dtype) {
         for (int idx = 0; idx < value.length; idx++) {
+            // In case of a 2D array, traverse its elements
             if (value[idx] instanceof DTypeArray) {
                 boolean eval = ((DTypeArray) value[idx]).containsDType(dtype);
                 if (eval) {

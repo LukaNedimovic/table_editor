@@ -7,7 +7,7 @@ import com.lnedimovic.table_editor.expression.function.Function;
 import java.lang.reflect.Constructor;
 
 /**
- * LCM is a function resembling standard mathematical largest common multiple, i.e. lcm(2, 5) = 10.
+ * LCM is a function resembling standard mathematical lowest common multiple, i.e. lcm(2, 5) = 10.
  */
 public class LCM extends Function {
     /**
@@ -19,16 +19,29 @@ public class LCM extends Function {
         super(id);
     }
 
+    /**
+     * Calculates lowest common multiple among two integers.
+     * @param left  Left operand
+     * @param right Right operand
+     * @return      Lowest common multiple
+     */
     public DTypeInteger lcm(DTypeInteger left, DTypeInteger right) {
         Integer leftValue  = left.getValue();
         Integer rightValue = right.getValue();
 
+        // LCM = (P * Q) / GCD(P, Q), according to standard mathematical formula
         Integer gcdResult = _gcd(leftValue, rightValue);
         Integer lcmResult = (leftValue * rightValue) / gcdResult;
 
         return new DTypeInteger(lcmResult);
     }
 
+    /**
+     * Helper functiono that calculates the greatest common divisor among two numbers.
+     * @param a Left operand
+     * @param b Right operand
+     * @return  Lowest common multiple of left and right operand,
+     */
     public Integer _gcd(Integer a, Integer b) {
         return (b == 0) ? a : _gcd(b, a % b);
     }

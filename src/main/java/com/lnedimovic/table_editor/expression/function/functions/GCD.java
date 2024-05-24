@@ -1,6 +1,5 @@
 package com.lnedimovic.table_editor.expression.function.functions;
 
-import com.lnedimovic.table_editor.dtype.DType;
 import com.lnedimovic.table_editor.dtype.dtypes.DTypeInteger;
 import com.lnedimovic.table_editor.expression.function.Function;
 
@@ -20,6 +19,12 @@ public class GCD extends Function {
         super(id);
     }
 
+    /**
+     * Calculates the greatest common divisor among two integers.
+     * @param left  Left operand
+     * @param right Right operand
+     * @return      Greatest common divisor among two integers.
+     */
     public DTypeInteger gcd(DTypeInteger left, DTypeInteger right) {
         return new DTypeInteger(_gcd(left.getValue(), right.getValue()));
     }

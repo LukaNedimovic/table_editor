@@ -3,6 +3,7 @@ package com.lnedimovic.table_editor.expression.ast;
 import com.lnedimovic.table_editor.dtype.DType;
 import com.lnedimovic.table_editor.dtype.DTypeFactory;
 import com.lnedimovic.table_editor.dtype.dtypes.DTypeArray;
+import com.lnedimovic.table_editor.dtype.dtypes.DTypeInteger;
 import com.lnedimovic.table_editor.expression.ast.node.Node;
 import com.lnedimovic.table_editor.expression.ast.node.nodes.ReferenceNode;
 import com.lnedimovic.table_editor.expression.operation.OperationSet;
@@ -41,8 +42,12 @@ public class ASTree {
         if (root == null) {
             throw new Exception("Root is not assigned.");
         }
-
-        return this.root.evaluate(operations);
+        try {
+            return this.root.evaluate(operations);
+        }
+        catch (Exception e) {
+            throw new Exception(e);
+        }
     }
 
     /**

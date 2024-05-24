@@ -1,12 +1,8 @@
 package com.lnedimovic.table_editor.expression.function;
 
 import com.lnedimovic.table_editor.dtype.DType;
-import com.lnedimovic.table_editor.dtype.dtypes.DTypeArray;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-
-import static org.junit.internal.MethodSorter.getDeclaredMethods;
 
 /**
  * Abstract class representing a N-ary function.
@@ -44,8 +40,6 @@ public abstract class Function {
      */
     private Class<?>   returnType;
 
-    private boolean turnArgsToArrayBeforeCall = false;
-
     /**
      * Creates an instance of Function, given id and types.
      * @param id         Unique identifier of the function.
@@ -57,19 +51,6 @@ public abstract class Function {
         }
         this.id = id;
     }
-    /**
-     * Creates an instance of Function, given id and types.
-     * @param id                       Unique identifier of the function.
-     * @param turnArgsToListBeforeCall Whether to turn arguments into a list before function call.
-     * @throws Exception               In case of invalid number of types.
-     */
-    public Function(String id, boolean turnArgsToListBeforeCall) throws Exception {
-        if (!validId(id)) {
-            throw new Exception("Invalid function id");
-        }
-        this.id = id;
-        this.turnArgsToArrayBeforeCall = turnArgsToListBeforeCall;
-    }
 
     /**
      * Evaluate function call by finding the appropriately named method inside the child function.
@@ -80,20 +61,6 @@ public abstract class Function {
     public DType<?> evaluate(DType<?>... args) throws Exception {
         // As of now, functions can use 2D arrays for their tasks.
         // This, rather ugly, patch of code transforms it into the correct shape.
-        if (turnArgsToArrayBeforeCall) {
-            if (args.length == 1 && args[0] instanceof DTypeArray) {
-                if (((DTypeArray) args[0]).get(0) instanceof DTypeArray) {
-                    // Correct shape
-                }
-                else {
-                    args = new DType[]{args[0]};
-                }
-            }
-            else {
-                DTypeArray temp = new DTypeArray(new DTypeArray(args));
-                args = new DType[]{temp};
-            }
-        }
 
         // Get the argument types provided
         Class<?>[] argumentTypes = getArgumentTypes(args);
@@ -108,30 +75,64 @@ public abstract class Function {
         }
 
         // If method is found, call it and return.
-        return (DType<?>) method.invoke(this, (Object[]) args);
+        try {
+            return (DType<?>) method.invoke(this, (Object[]) args);
+        }
+        catch (Exception e) {
+            throw new Exception(e);
+        }
     }
 
-    private Method findMatchingMethod(String methodName, Class<?>[] argumentTypes) {
+    /**
+     * @param args Arguments provided to the function.
+     * @return     Array containing type of every argument, in order.
+     */
+    public Class<?>[] getArgumentTypes(DType<?>... args) {
+        int numOfArguments  = args.length;
+        Class<?>[] argumentTypes = new Class[numOfArguments];
+
+        // For each argument, store its class on its respective index
+        for (int argIdx = 0; argIdx < args.length; argIdx++) {
+            argumentTypes[argIdx] = args[argIdx].getClass();
+        }
+
+        return argumentTypes;
+    }
+
+    /**
+     * Finds matching method in class being used for evaluation.
+     * @param methodName    Name of the method. It is always the same as the "identifier" of a function (i.e. "sum")
+     * @param argumentTypes List of argument types provided to the class for evaluation.
+     * @return              Found method.
+     */
+    private Method findMatchingMethod(String methodName, Class<?>[] argumentTypes) throws Exception {
+        // For each method inside the class
         for (Method method : getClass().getDeclaredMethods()) {
+            // Check if method name is desired (i.e. same)
             if (method.getName().equals(methodName)) {
                 Class<?>[] parameterTypes = method.getParameterTypes();
 
+                // Number of parameters and provided values must match
                 if (parameterTypes.length == argumentTypes.length) {
-                    boolean matches = true;
-                    for (int i = 0; i < parameterTypes.length; i++) {
-                        if (!parameterTypes[i].isAssignableFrom(argumentTypes[i])) {
-                            matches = false;
+                    boolean allTypesMatching = true;
+                    for (int idx = 0; idx < parameterTypes.length; idx++) {
+                        // In case of parameter type mismatch, flip the flag to false and stop checking for other types.
+                        if (!parameterTypes[idx].isAssignableFrom(argumentTypes[idx])) {
+                            allTypesMatching = false;
                             break;
                         }
                     }
 
-                    if (matches) {
+                    // In case of all types matching, return the current function as found!
+                    if (allTypesMatching) {
                         return method;
                     }
                 }
             }
         }
-        return null;
+
+        // In case of no matching function, throw an exception.
+        throw new Exception("Can't find function with given parameter types.");
     }
 
     public boolean validId(String id) {
@@ -149,6 +150,10 @@ public abstract class Function {
         return String.format("Function(id=%s, returnType=%s)", id, returnType);
     }
 
+    /**
+     * @param obj Object to check equality with.
+     * @return    True if objects are equal; false, otherwise.
+     */
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -161,27 +166,6 @@ public abstract class Function {
         }
 
         return false;
-    }
-
-    public Class<?>[] getArgumentTypes(DType<?>... args) {
-        int numOfArguments  = args.length;
-
-        Class<?>[] argumentTypes = new Class[numOfArguments];
-        for (int argIdx = 0; argIdx < args.length; argIdx++) {
-            argumentTypes[argIdx] = args[argIdx].getClass();
-        }
-
-        return argumentTypes;
-    }
-
-    public DType<?> convertToDType(DType<?> obj, Class<?> type) throws Exception {
-        return (DType<?>) type.getDeclaredConstructor(obj.getClass()).newInstance(obj);
-    }
-
-    public void convertToValidDTypes(DType<?>[] args) throws Exception {
-        for (int i = 0; i < arity; i++) {
-            args[i] = convertToDType(args[i], parameterTypes[i]);
-        }
     }
 
 
@@ -214,11 +198,5 @@ public abstract class Function {
     }
     public void setPrecedence(int precedence) {
         this.precedence = precedence;
-    }
-    public boolean isTurnArgsToArrayBeforeCall() {
-        return turnArgsToArrayBeforeCall;
-    }
-    public void setTurnArgsToArrayBeforeCall(boolean turnArgsToListBeforeCall) {
-        this.turnArgsToArrayBeforeCall = turnArgsToListBeforeCall;
     }
 }

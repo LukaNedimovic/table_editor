@@ -126,7 +126,7 @@ Even though it is a small project, there are some cool features, such as:
 </tr>
 
 <tr>
-  <td> <code>=sum(1, 2, 3, 4)</code> </td>
+  <td> <code>=sum([1, 2, 3, 4])</code> </td>
   <td> <code>10</code> </td>
   <td> Functions with variable length of arguments are supported!</td>
 </tr>
@@ -171,9 +171,9 @@ Even though it is a small project, there are some cool features, such as:
 
 <h2> 📅 TODO </h2>
 <ul>
-  <li> ⌛ <code>Array parsing</code> - Current code can produce and use <code>DTypeArray</code> data, but can't parse user-entered arrays.</li>
   <li> ⌛ <code>Documentation / Comments</code> - Code is clean by itself, but a few <b>doccument comments</b> can't hurt.</li>
   <li> ⌛ <code>Testing</code> - Current code seems to work alright, but additional testing and better exception handling (on UI side) would be appreciated.</li>
+  <li> ✅ <code>Array parsing</code> - Current code can produce and use <code>DTypeArray</code> data, and also parse it as part of expressoin!</li>
   <li> ✅ <code><b>Strongly typed functions</b></code> - Functions, as of now, convert certain types among each other. They should not do that - strongly typed function parameters need to be easily <implementable class=""></implementable> </li>
   <li> ✅ <code><b>List DType</b></code> - Type that contains list of some type. It would be useful for functions with unfixed number of arguments. </li>
 </ul>

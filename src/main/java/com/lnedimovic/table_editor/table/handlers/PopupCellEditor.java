@@ -66,7 +66,6 @@ public class PopupCellEditor extends AbstractCellEditor implements TableCellEdit
      * @param column          The column of the cell being edited
      * @return
      */
-
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         String expression = JOptionPane.showInputDialog(table, "Enter new cell value:", value);
@@ -90,8 +89,6 @@ public class PopupCellEditor extends AbstractCellEditor implements TableCellEdit
             // If error occurs, show the error message to the user.
             catch (Exception ex) {
                 String exceptionMessage = ex.getMessage();
-
-                System.out.println(exceptionMessage);
                 JOptionPane.showMessageDialog(null, "Exception occured: " + exceptionMessage);
             }
         }

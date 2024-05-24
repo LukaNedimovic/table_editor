@@ -23,12 +23,26 @@ public class Abs extends Function {
         super(id);
     }
 
+    /**
+     * @param arg
+     * @return    Absolute value of operand
+     */
     public DType<?> abs(DTypeDouble arg) {
         return new DTypeDouble(Math.abs(arg.getValue()));
     }
+
+    /**
+     * @param arg
+     * @return    Absolute value of operand
+     */
     public DType<?> abs(DTypeInteger arg) {
         return new DTypeInteger(Math.abs(arg.getValue()));
     }
+
+    /**
+     * @param arg
+     * @return    Absolute value of operand
+     */
     public DType<?> abs(DTypeBoolean arg) {
         return new DTypeBoolean(Math.abs(arg.getIntegerValue()));
     }

@@ -1,11 +1,7 @@
 package com.lnedimovic.table_editor.expression.function.functions;
 
 import com.lnedimovic.table_editor.dtype.DType;
-import com.lnedimovic.table_editor.dtype.dtypes.DTypeDouble;
-import com.lnedimovic.table_editor.dtype.dtypes.DTypeInteger;
 import com.lnedimovic.table_editor.expression.function.Function;
-
-import java.lang.reflect.Constructor;
 
 /**
  * Pow is a function resembling standard mathematical exponentiation, i.e. pow(2, 3) = 2 ^ 3 = 8
@@ -20,6 +16,12 @@ public class Pow extends Function {
         super(id);
     }
 
+    /**
+     * @param base
+     * @param exponent
+     * @return           Base to the power of exponent
+     * @throws Exception
+     */
     public DType<?> pow(DType<?> base, DType<?> exponent) throws Exception {
         return base.exp(exponent);
     }

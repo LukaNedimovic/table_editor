@@ -61,17 +61,22 @@ public class TableModel extends AbstractTableModel {
      */
     public DType<?> checkForFormula(String expression) throws Exception {
         if (expression.startsWith("=")) {
-            // First tokenize the expression
-            ArrayList<Token> tokens = tokenizer.tokenize(expression);
+            try {
+                // First tokenize the expression
+                ArrayList<Token> tokens = tokenizer.tokenize(expression);
 
-            // Parse the expression
-            ASTree expressionTree = parser.parseTokens(tokens);
+                // Parse the expression
+                ASTree expressionTree = parser.parseTokens(tokens);
 
-            // Before evaluation, cell references need to be filled according to the table model's data
-            expressionTree.fillReferences(expressionTree.getRoot(), this);
+                // Before evaluation, cell references need to be filled according to the table model's data
+                expressionTree.fillReferences(expressionTree.getRoot(), this);
 
-            // Evaluate and return the value
-            return expressionTree.evaluate(operations);
+                // Evaluate and return the value
+                return expressionTree.evaluate(operations);
+            }
+            catch (Exception e) {
+                throw new Exception(e);
+            }
         }
         else {
             return null;

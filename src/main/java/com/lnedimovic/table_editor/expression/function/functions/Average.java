@@ -16,12 +16,24 @@ public class Average extends Function {
      * @throws Exception  In case of invalid number of parameters.
      */
     public Average(String id) throws Exception {
-        super(id, true);
+        super(id);
 
     }
 
+    /**
+     * Calculates the average value of provided values.
+     * @param args       List of values.
+     * @return           Average value of provided values.
+     * @throws Exception In case of invalid types or invalid dimensionality (>2).
+     */
     public DType<?> average(DTypeArray args) throws Exception {
-        checkTypes(args);
+        try {
+            checkTypes(args);               // Check for invalid types
+            args = args.toTwoDimensional(); // Upscale to 2D array, if needed
+        }
+        catch (Exception e) {
+            throw new Exception(e);
+        }
 
         DType<?> sum = args.get(0, 0);
         for (int row = 0; row < args.length(); row++) {

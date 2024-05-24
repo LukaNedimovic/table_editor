@@ -15,22 +15,35 @@ public class Sum extends Function {
      * @throws Exception  In case of invalid number of parameters.
      */
     public Sum(String id) throws Exception {
-        super(id, true);
+        super(id);
 
     }
 
+    /**
+     * @param args       Evaluated expressions inside array passed originally in the GUI.
+     * @return           Sum of all elements provided.
+     * @throws Exception In case of invalid type.
+     */
     public DType<?> sum(DTypeArray args) throws Exception {
-        checkTypes(args);
+        try {
+            checkTypes(args);               // Check for invalid types
+            args = args.toTwoDimensional(); // Upscale to 2D array, if needed
+        }
+        catch (Exception e) {
+            throw new Exception(e);
+        }
 
+        // To "bias" the result type around the actual data in the DTypeArray, the first element is stored inside.
         DType<?> result = args.get(0, 0);
-        for (int row = 0; row < args.length(); row++) {
-            DTypeArray rowArray = (DTypeArray) args.get(row);
 
-            for (int col = 0; col < rowArray.length(); col++) {
-                if (row == 0 && col == 0) {
+        // Go through every element and add it to the result
+        for (int row = 0; row < args.length(); row++) {
+            for (int col = 0; col < ((DTypeArray) args.get(row)).length(); col++) {
+                if (row == 0 && col == 0) { // Skip the first value because it's already calculated
                     continue;
                 }
 
+                // Add the current value to the sum
                 result = result.add(args.get(row, col));
             }
         }
@@ -38,6 +51,11 @@ public class Sum extends Function {
         return result;
     }
 
+    /**
+     * Auxiliary function, created to check whether certain types are not meaningful to use inside the function.
+     * @param args       Complete list of arguments.
+     * @throws Exception In case of invalid type provided to the function.
+     */
     public void checkTypes(DTypeArray args) throws Exception {
         if (args.containsDType(DTypeString.class)) {
             throw new Exception("sum(DTypeArray).checkTypes: Invalid type provided: DTypeString");

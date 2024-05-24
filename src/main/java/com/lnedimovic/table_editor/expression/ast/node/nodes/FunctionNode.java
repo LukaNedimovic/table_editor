@@ -26,22 +26,35 @@ public class FunctionNode extends Node {
     public FunctionNode(Function function, Node[] arguments) {
         super();
 
-        this.function = function;
+        this.function  = function;
         this.arguments = arguments;
     }
 
     /**
      * @return           Function evaluation of given arguments. Every argument must be first recursively evaluated itself.
-     * @throws Exception
+     * @throws Exception In case of error in the child evaluation, or the function evaluation itself.
      */
     @Override
     public DType<?> evaluate(OperationSet operations) throws Exception {
+        // To evaluate a function, values of all the children must be known
+        // Therefore, first evaluate the children nodes in AST, then use those values to evaluate the function itself
         DType<?>[] childEvaluations = new DType[arguments.length];
         for (int i = 0; i < arguments.length; i++) {
-            childEvaluations[i] = (DType<?>) arguments[i].evaluate(operations);
+            try {
+                childEvaluations[i] = arguments[i].evaluate(operations);
+            }
+            catch (Exception e) {
+                throw new Exception(e);
+            }
         }
 
-        return function.evaluate(childEvaluations);
+        // Return function evaluation
+        try {
+            return function.evaluate(childEvaluations);
+        }
+        catch (Exception e) {
+            throw new Exception(e);
+        }
     }
 
     /**
