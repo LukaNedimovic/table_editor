@@ -5,7 +5,7 @@ Date of creation: <b>May, 2024</b>. <br/>
 For original version (type support, string literals...), consider checking out: <a href="https://github.com/LukaNedimovic/table_editor/tree/1fc7ecbd9728186ef982727d89a55e16369a7b87">Double-only version</a>.
 <br/>
 
-Here for the updates? Check them out: <a id="latest-modifications">🔥 Latest Modifications</a>
+Here for the updates? Check them out down below @ <b>🔥 Latest Modifications</b>
 
 <h2> 🚀 Quick Start </h2>
 <b>Table Editor</b> can be compiled and ran using provided <b>gradlew</b>:
@@ -156,11 +156,9 @@ Even though it is a small project, there are some cool features, such as:
     <code>A1:B2</code> returns a <code>DTypeArray([[1, 2], [3, 4]])</code>, which is then evaluated to get the result <code>DTypeDouble(2.5)</code>
   </td>
 </tr>
-
-
 </table>
 
-<h2 id="latest-modifications"> 🔥 Latest Modifications </h2>
+<h2> 🔥 Latest Modifications </h2>
 <b>Table Editor</b> now supports <b>Cell Range References</b>! <br/>
 <b>Table Editor</b> now supports <code>DTypeArray</code> - used for manipulation of <code>DType</code> data stored within a multi-dimensional array.<br/>
 <b>Table Editor</b> is now <b>fully typed</b>! Functions accept typed parameters, and don't do conversions (as they did in the past). <br/>
