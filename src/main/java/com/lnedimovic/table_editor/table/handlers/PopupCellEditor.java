@@ -21,7 +21,7 @@ public class PopupCellEditor extends AbstractCellEditor implements TableCellEdit
     /**
      * Text field inside a cell.
      */
-    private JTextField textField;
+    private final JTextField textField;
 
     /**
      * Creates an instance of <code>PopupCellEditor</code>.
@@ -75,14 +75,21 @@ public class PopupCellEditor extends AbstractCellEditor implements TableCellEdit
             TableModel model = (TableModel) table.getModel();
             String newValue;
 
+            DType<?> oldValue = (DType<?>) table.getModel().getValueAt(row, column);
+
             // Check if the entered expression is formula and try evaluating it
             try {
-                DType<?> result = model.checkForFormula(expression);
-                if (result == null) {
-                    newValue = expression;
+                if (expression.startsWith("=")) {
+                    DType<?> result = model.checkForFormula(expression);
+                    if (result == null) {
+                        newValue = oldValue.toString();
+                    }
+                    else {
+                        newValue = result.toString();
+                    }
                 }
                 else {
-                    newValue = result.toString();
+                    newValue = expression;
                 }
                 textField.setText(newValue);
             }
