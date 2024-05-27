@@ -1,9 +1,8 @@
 <h1>📝 Table Editor</h1>
 
-Test task project created for the purposes of application to <b> JetBrains Internship ("Low code Table Data preprocessing").</b> <br/>
+<b>Table Editor</b> is an easily scalable strongly typed editor for tabular data, supporting custom easy-to-add functions and operations and an extensible custom written parser, followed by a neat and intuitive GUI.<br/>
 Date of creation: <b>May, 2024</b>. <br/>
-For original version (type support, string literals...), consider checking out: <a href="https://github.com/LukaNedimovic/table_editor/tree/1fc7ecbd9728186ef982727d89a55e16369a7b87">Double-only version</a>.
-<br/>
+
 
 Here for the updates? Check them out down below @ <b>🔥 Latest Modifications</b>
 
@@ -165,13 +164,4 @@ Even though it is a small project, there are some cool features, such as:
 <b>Tests</b> have been added for operations (type-wise combinations), functions, and general expressions! Make sure to check them out:
 <pre><code>./gradlew test</code></pre>
 <b>Table Editor</b> now supports <code>DTypeString</code> - used for manipulation of String literals! <br/>
-<b>Table Editor</b> now supports <code>DTypeBoolean</code> - used for manipulation of Boolean values (<code>True</code> / <code>False</code>)! 
-
-<h2> 📅 TODO </h2>
-<ul>
-  <li> ⌛ <code>Documentation / Comments</code> - Code is clean by itself, but a few <b>doccument comments</b> can't hurt.</li>
-  <li> ⌛ <code>Testing</code> - Current code seems to work alright, but additional testing and better exception handling (on UI side) would be appreciated.</li>
-  <li> ✅ <code>Array parsing</code> - Current code can produce and use <code>DTypeArray</code> data, and also parse it as part of expressoin!</li>
-  <li> ✅ <code><b>Strongly typed functions</b></code> - Functions, as of now, convert certain types among each other. They should not do that - strongly typed function parameters need to be easily <implementable class=""></implementable> </li>
-  <li> ✅ <code><b>List DType</b></code> - Type that contains list of some type. It would be useful for functions with unfixed number of arguments. </li>
-</ul>
+<b>Table Editor</b> now supports <code>DTypeBoolean</code> - used for manipulation of Boolean values (<code>True</code> / <code>False</code>)!
