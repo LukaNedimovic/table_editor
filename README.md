@@ -158,6 +158,7 @@ Even though it is a small project, there are some cool features, such as:
 </table>
 
 <h2> 🔥 Latest Modifications </h2>
+<b>Table Editor</b> now supports DTypeArray parsing and, therefore, functions whose arguments are of variable length. <br/>
 <b>Table Editor</b> now supports <b>Cell Range References</b>! <br/>
 <b>Table Editor</b> now supports <code>DTypeArray</code> - used for manipulation of <code>DType</code> data stored within a multi-dimensional array.<br/>
 <b>Table Editor</b> is now <b>fully typed</b>! Functions accept typed parameters, and don't do conversions (as they did in the past). <br/>
